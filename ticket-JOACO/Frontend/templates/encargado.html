@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gestión de tickets</title>
+
+    <link rel="stylesheet" href="../css/estilos.css">
+
+    <script src="../js/encargado.js" defer></script>
+     <style> *{color: #ffffff; background-color: #111;} </style>
+</head>
+
+<body>
+    <header>
+        <h1>Gestión de tickets</h1>
+
+        <nav>
+            <a href="crear-usuario.html">
+                Crear usuario
+            </a>
+
+            <a href="criterios-prioridad.html">
+                Criterios de prioridad
+            </a>
+
+            <button id="boton-logout" type="button">
+                Cerrar sesión
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2 id="titulo-formulario">
+                Crear ticket
+            </h2>
+
+            <form id="formulario-ticket">
+                <input
+                    type="hidden"
+                    id="id-ticket"
+                >
+
+                <div>
+                    <label for="descripcion">
+                        Descripción
+                    </label>
+
+                    <textarea
+                        id="descripcion"
+                        maxlength="2000"
+                        required
+                    ></textarea>
+                </div>
+
+                <div>
+                    <label for="sala">Sala</label>
+
+                    <select id="sala">
+                        <option value="">Sin sala</option>
+                        <option value="Salón 5">Salón 5</option>
+                        <option value="Salón 6">Salón 6</option>
+                        <option value="Salón 7">Salón 7</option>
+                        <option value="Adscripción">Adscripción</option>
+                        <option value="Dirección">Dirección</option>
+                        <option value="Campus">Campus</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="prioridad">
+                        Prioridad
+                    </label>
+
+                    <select id="prioridad" required>
+                        <option value="">
+                            Selecciona una prioridad
+                        </option>
+                    </select>
+                </div>
+
+                <div id="contenedor-estado" hidden>
+                    <label for="estado">Estado</label>
+
+                    <select id="estado">
+                        <option value="">
+                            Selecciona un estado
+                        </option>
+                    </select>
+                </div>
+
+                <p id="mensaje-error" role="alert" hidden></p>
+                <p id="mensaje-exito" role="status" hidden></p>
+
+                <button type="submit">
+                    Crear ticket
+                </button>
+
+                <button
+                    id="boton-cancelar"
+                    type="button"
+                    hidden
+                >
+                    Cancelar modificación
+                </button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Todos los tickets</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Creador</th>
+                        <th>Descripción</th>
+                        <th>Sala</th>
+                        <th>Prioridad</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody id="lista-tickets"></tbody>
+            </table>
+
+            <p id="sin-tickets" hidden>
+                No existen tickets registrados.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

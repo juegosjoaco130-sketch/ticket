@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Sistema institucional para el registro y seguimiento de tickets."
+    >
+
+    <title>Iniciar sesión | Sistema de Tickets</title>
+
+    <link rel="stylesheet" href="css/estilos.css">
+
+    <script src="js/login.js" defer></script>  <!--el defer hace que el codigo js se cargue desde el inicio-->
+    <style> *{color: #ffffff; background-color: #111;} </style>
+
+</head>
+
+<body>
+    <main>
+        <section >
+            <header>
+                <p>Sistema institucional</p>
+
+                <h1 id="titulo-login">
+                    Gestión de tickets
+                </h1>
+
+                <p>
+                    Ingresa con tu cuenta para registrar y consultar
+                    incidentes.
+                </p>
+            </header>
+
+            <form id="formulario-login">
+                <div>
+                    <label for="usuario">
+                        Usuario
+                    </label>
+
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        maxlength="50"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label for="password">
+                        Contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <p
+                    id="mensaje-error"
+                    role="alert"
+                    hidden
+                ></p>
+
+                <button type="submit">
+                    Iniciar sesión
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>Sistema de gestión de incidentes</p>
+    </footer>
+</body>
+</html>
