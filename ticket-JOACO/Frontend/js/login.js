@@ -14,8 +14,22 @@ formulario.addEventListener('submit', async (eventoEnvio) => {
     const usuario = campoUsuario.value.trim(); //elimino espacios en blanco al inicio y al final del usuario
     const password = campoPassword.value;
 
-    if (usuario === '' || password === '') {
-        mostrarError('Debes completar el usuario y la contraseña.');
+    //La contraseña se envía tal cual fue escrita; solo se usa trim()
+    //para detectar el caso de un campo con únicamente espacios.
+    const passwordVacia = password.trim() === '';
+
+    if (usuario === '' || passwordVacia) {
+        if (usuario === '' && passwordVacia) {
+            mostrarError('Debes completar el usuario y la contraseña.');
+            campoUsuario.focus();
+        } else if (usuario === '') {
+            mostrarError('Debes completar el usuario.');
+            campoUsuario.focus();
+        } else {
+            mostrarError('Debes completar la contraseña.');
+            campoPassword.focus();
+        }
+
         return;
     }
 
@@ -37,9 +51,27 @@ formulario.addEventListener('submit', async (eventoEnvio) => {
             })
         });
 
-        const datos = await respuesta.json();
+        //Si el servidor devuelve algo que no es JSON (por ejemplo una
+        //página de error), se informa con un mensaje claro en lugar de
+        //mostrar un error técnico al usuario.
+        let datos;
+
+        try {
+            datos = await respuesta.json();
+        } catch (errorParseo) {
+            throw new Error(
+                'Respuesta inválida del servidor. Intenta nuevamente.'
+            );
+        }
 
         if (!respuesta.ok) {
+            //Ante credenciales incorrectas se limpia la contraseña y se
+            //devuelve el foco al campo para facilitar un nuevo intento.
+            if (respuesta.status === 401) {
+                campoPassword.value = '';
+                campoPassword.focus();
+            }
+
             throw new Error(
                 datos.error || 'No fue posible iniciar sesión.'
             );

@@ -25,13 +25,34 @@ final class AuthController
             ], 400);
         }
 
-        $nombreUsuario = trim($datos['usuario'] ?? '');
+        $nombreUsuario = $datos['usuario'] ?? '';
         $password = $datos['password'] ?? '';
 
-        if ($nombreUsuario === '' || $password === '') {
+        //Si algún campo llega con un tipo inesperado (arreglo u objeto),
+        //se rechaza con 422 en lugar de provocar un error interno.
+        if (!is_string($nombreUsuario) || !is_string($password)) {
+            Response::json([
+                'error' => 'Los datos enviados no son válidos'
+            ], 422);
+        }
+
+        $nombreUsuario = trim($nombreUsuario);
+
+        //La contraseña se verifica tal cual fue escrita; trim() solo se
+        //usa para detectar un campo con únicamente espacios.
+        if ($nombreUsuario === '' || trim($password) === '') {
             Response::json([
                 'error' => 'Debes completar usuario y contraseña'
             ], 422);
+        }
+
+        //Valores imposibles según el esquema (usuario de hasta 50
+        //caracteres): se responden igual que unas credenciales
+        //incorrectas para no revelar información sobre las cuentas.
+        if (strlen($nombreUsuario) > 50 || strlen($password) > 255) {
+            Response::json([
+                'error' => 'Usuario o contraseña incorrectos'
+            ], 401);
         }
 
         $usuario = $this->authService->iniciarSesion(

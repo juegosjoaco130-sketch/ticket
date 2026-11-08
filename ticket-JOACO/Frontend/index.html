@@ -10,79 +10,96 @@
 
     <meta
         name="description"
-        content="Sistema institucional para el registro y seguimiento de tickets."
+        content="Dely - Inicia sesión para acceder a tu cuenta."
     >
 
-    <title>Iniciar sesión | Sistema de Tickets</title>
+    <title>Iniciar sesión | Dely</title>
 
     <link rel="stylesheet" href="css/estilos.css">
 
     <script src="js/login.js" defer></script>  <!--el defer hace que el codigo js se cargue desde el inicio-->
-    <style> *{color: #ffffff; background-color: #111;} </style>
 
 </head>
 
-<body>
-    <main>
-        <section >
-            <header>
-                <p>Sistema institucional</p>
+<body class="dely-login">
+    <main class="dely-login__contenedor">
+        <section
+            class="dely-login__tarjeta"
+            aria-labelledby="titulo-login"
+        >
+            <header class="dely-login__marca">
+                <p class="dely-login__logo" aria-hidden="true">
+                    Dely<span class="dely-login__punto">.</span>
+                </p>
 
                 <h1 id="titulo-login">
-                    Gestión de tickets
+                    Iniciar sesión
                 </h1>
 
-                <p>
-                    Ingresa con tu cuenta para registrar y consultar
-                    incidentes.
+                <p class="dely-login__subtitulo">
+                    Ingresa con tu cuenta para continuar.
                 </p>
             </header>
 
             <form id="formulario-login">
-                <div>
-                    <label for="usuario">
+                <div class="dely-login__campo">
+                    <label
+                        class="dely-login__etiqueta"
+                        for="usuario"
+                    >
                         Usuario
                     </label>
 
                     <input
+                        class="dely-login__input"
                         type="text"
                         id="usuario"
                         name="usuario"
                         maxlength="50"
                         autocomplete="username"
+                        placeholder="Tu nombre de usuario"
                         required
                     >
                 </div>
 
-                <div>
-                    <label for="password">
+                <div class="dely-login__campo">
+                    <label
+                        class="dely-login__etiqueta"
+                        for="password"
+                    >
                         Contraseña
                     </label>
 
                     <input
+                        class="dely-login__input"
                         type="password"
                         id="password"
                         name="password"
                         autocomplete="current-password"
+                        placeholder="Tu contraseña"
                         required
                     >
                 </div>
 
                 <p
                     id="mensaje-error"
+                    class="dely-login__error"
                     role="alert"
                     hidden
                 ></p>
 
-                <button type="submit">
+                <button
+                    class="dely-login__boton"
+                    type="submit"
+                >
                     Iniciar sesión
                 </button>
             </form>
         </section>
     </main>
 
-    <footer>
-        <p>Sistema de gestión de incidentes</p>
+    <footer class="dely-login__pie">
+        <p>Dely · Acceso seguro</p>
     </footer>
 </body>
 </html>
