@@ -2,13 +2,13 @@ services:
   backend:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     working_dir: /app
     command: php -S 0.0.0.0:8000 -t public public/index.php
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
+      - ./Backend:/app
     env_file:
       - .env
     depends_on:

@@ -1,0 +1,2 @@
+# No subir nunca el archivo con las claves reales (ver .env.example).
+.env

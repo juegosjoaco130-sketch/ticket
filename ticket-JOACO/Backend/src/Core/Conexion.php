@@ -10,7 +10,7 @@ final class Conexion
             return self::$conexion;
         }
 
-        $config = require __DIR__ . '/../../Config/Parametros.php';
+        $config = require __DIR__ . '/../../config/Parametros.php';
 
         self::validarConfiguracion($config);
 

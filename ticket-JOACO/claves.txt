@@ -1,2 +1,19 @@
-encargado: paquito clave123;
-docente: docente1 docente123;        
+Dely - Cuentas de prueba (las contraseñas NO se guardan en este archivo)
+==============================================================================
+
+- Rol encargado: cuenta de prueba del encargado.
+- Rol docente: cuenta de prueba del docente.
+
+Las contraseñas de prueba se entregan por un canal seguro y nunca deben
+escribirse en texto plano dentro del repositorio.
+
+Las contraseñas reales del sistema se guardan en la tabla `usuarios`
+únicamente como hash (password_hash) y se verifican con password_verify.
+
+Si necesitás restablecer una contraseña de prueba:
+1. Generá un hash nuevo con password_hash y PASSWORD_DEFAULT.
+2. Actualizá la columna password_hash del usuario correspondiente.
+3. No anotes la contraseña en este archivo.
+
+Nota: las contraseñas anteriores quedaron en el historial de Git, por lo
+que se recomienda rotarlas (cambiarlas) en la base de datos.
