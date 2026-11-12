@@ -1,5 +1,13 @@
 -- ============================================================================
--- DELY — B05: migración definitiva del rol docente -> repartidor
+-- AVISO HISTÓRICO (corrección final B03): NO EJECUTAR este script.
+-- La estructura actual de Dely ya utiliza los roles `encargado` y
+-- `repartidor`, por lo que esta migración quedó obsoleta. Se conserva
+-- únicamente como registro del trabajo realizado. No confundir con B04
+-- (adaptación de tickets a pedidos), que es un trabajo pendiente distinto.
+-- ============================================================================
+
+-- ============================================================================
+-- DELY — B05: migración definitiva del rol docente -> repartidor (histórica)
 -- ============================================================================
 -- Qué hace: permite 'repartidor' en usuarios.rol, convierte los registros
 -- 'docente' existentes y retira el valor viejo. No borra usuarios ni tablas.
