@@ -27,16 +27,27 @@
 
     <main>
         <form id="formulario-usuario">
+            <!--B03-corr: la tabla real usa nombre/apellido (no existe cedula).-->
             <div>
-                <label for="cedula">Cédula</label>
+                <label for="nombre">Nombre</label>
 
                 <input
                     type="text"
-                    id="cedula"
-                    name="cedula"
-                    minlength="8"
-                    maxlength="8"
-                    inputmode="numeric"
+                    id="nombre"
+                    name="nombre"
+                    autocomplete="given-name"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="apellido">Apellido</label>
+
+                <input
+                    type="text"
+                    id="apellido"
+                    name="apellido"
+                    autocomplete="family-name"
                     required
                 >
             </div>

@@ -17,22 +17,25 @@ final class AuthService
             return null;
         }
 
-        if ((int) $usuario['activo'] !== 1) {
+        //B03-corr: la tabla real usa estado ('activo'/'inactivo').
+        if ($usuario['estado'] !== 'activo') {
             return null;
         }
 
-        if (!password_verify($password, $usuario['password_hash'] )) {
+        if (!password_verify($password, $usuario['password'] )) {
             return null;
         }
 
         session_regenerate_id(true);
 
-        $_SESSION['id_usuario'] = (int) $usuario['id_usuario'];
+        //B03-corr: la columna real es `id`; la clave 'id_usuario' se
+        //conserva como puente interno hasta B04 (tickets -> pedidos).
+        $_SESSION['id_usuario'] = (int) $usuario['id'];
         $_SESSION['usuario'] = $usuario['usuario'];
         $_SESSION['rol'] = $usuario['rol'];
 
         return [
-            'id_usuario' => (int) $usuario['id_usuario'],
+            'id_usuario' => (int) $usuario['id'],
             'usuario' => $usuario['usuario'],
             'rol' => $usuario['rol']
         ];

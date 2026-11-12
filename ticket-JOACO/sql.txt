@@ -1,3 +1,12 @@
+-- ============================================================================
+-- AVISO: esquema HISTÓRICO de la plantilla Ticket-JOACO. NO EJECUTAR sobre la
+-- base `dely` (la sobrescribiría/rompería: nuestra tabla `usuarios` real usa
+-- id, nombre, apellido, usuario, password, rol, estado, fecha_creacion, y las
+-- tablas reales son usuarios, pedidos, estados_pedido, historial_pedidos).
+-- Se conserva solo como referencia del punto de partida. Para auditar la base
+-- real, usar b03-auditoria-db.sql. (B03-corr)
+-- ============================================================================
+
 CREATE TABLE usuarios (
     id_usuario INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     cedula CHAR(8) NOT NULL UNIQUE,

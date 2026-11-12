@@ -7,23 +7,29 @@ final class Usuario
     ) {
     }
 
+    //B03-corr: consultas adaptadas a la tabla real `usuarios` de Dely:
+    //id, nombre, apellido, usuario, password, rol, estado, fecha_creacion.
+    //El parámetro interno $idUsuario se conserva hasta B04.
+
     public function buscarPorId(int $idUsuario): ?array
     {
         $sql = '
             SELECT
-                id_usuario,
-                cedula,
+                id,
+                nombre,
+                apellido,
                 usuario,
                 rol,
-                activo
+                estado,
+                fecha_creacion
             FROM usuarios
-            WHERE id_usuario = :id_usuario
+            WHERE id = :id
         ';
 
         $consulta = $this->conexion->prepare($sql);
 
         $consulta->execute([
-            'id_usuario' => $idUsuario
+            'id' => $idUsuario
         ]);
 
         $usuario = $consulta->fetch();
@@ -34,18 +40,19 @@ final class Usuario
     public function buscarPorNombreUsuario(string $nombreUsuario): ?array
     {
         /*
-         * En este método sí recuperamos password_hash porque será
+         * En este método sí recuperamos password porque será
          * utilizado por AuthService para comprobar la contraseña.
          */
 
         $sql = '
             SELECT
-                id_usuario,
-                cedula,
+                id,
+                nombre,
+                apellido,
                 usuario,
-                password_hash,
+                password,
                 rol,
-                activo
+                estado
             FROM usuarios
             WHERE usuario = :usuario
         ';
@@ -65,11 +72,12 @@ final class Usuario
     {
         $sql = "
             SELECT
-                id_usuario,
-                cedula,
+                id,
+                nombre,
+                apellido,
                 usuario,
                 rol,
-                activo
+                estado
             FROM usuarios
             WHERE rol = 'repartidor'
             ORDER BY usuario ASC
@@ -81,59 +89,71 @@ final class Usuario
     }
 
     public function crear(
-        string $cedula,
+        string $nombre,
+        string $apellido,
         string $nombreUsuario,
         string $passwordHash,
         string $rol
     ): int {
         $sql = '
             INSERT INTO usuarios (
-                cedula,
+                nombre,
+                apellido,
                 usuario,
-                password_hash,
+                password,
                 rol,
-                activo
+                estado,
+                fecha_creacion
             ) VALUES (
-                :cedula,
+                :nombre,
+                :apellido,
                 :usuario,
-                :password_hash,
+                :password,
                 :rol,
-                TRUE
+                \'activo\',
+                NOW()
             )
         ';
 
         $consulta = $this->conexion->prepare($sql);
 
         $consulta->execute([
-            'cedula' => $cedula,
+            'nombre' => $nombre,
+            'apellido' => $apellido,
             'usuario' => $nombreUsuario,
-            'password_hash' => $passwordHash,
+            'password' => $passwordHash,
             'rol' => $rol
         ]);
 
         return (int) $this->conexion->lastInsertId();
     }
 
-    public function cambiarEstadoActivo(
+    public function cambiarEstado(
         int $idUsuario,
-        bool $activo
+        string $estado
     ): bool {
+        if (!in_array($estado, ['activo', 'inactivo'], true)) {
+            throw new InvalidArgumentException(
+                'El estado debe ser activo o inactivo'
+            );
+        }
+
         $sql = '
             UPDATE usuarios
-            SET activo = :activo
-            WHERE id_usuario = :id_usuario
+            SET estado = :estado
+            WHERE id = :id
         ';
 
         $consulta = $this->conexion->prepare($sql);
 
         $consulta->bindValue(
-            ':activo',
-            $activo,
-            PDO::PARAM_BOOL
+            ':estado',
+            $estado,
+            PDO::PARAM_STR
         );
 
         $consulta->bindValue(
-            ':id_usuario',
+            ':id',
             $idUsuario,
             PDO::PARAM_INT
         );
@@ -141,23 +161,6 @@ final class Usuario
         $consulta->execute();
 
         return $consulta->rowCount() > 0;
-    }
-
-    public function existeCedula(string $cedula): bool
-    {
-        $sql = '
-            SELECT COUNT(*)
-            FROM usuarios
-            WHERE cedula = :cedula
-        ';
-
-        $consulta = $this->conexion->prepare($sql);
-
-        $consulta->execute([
-            'cedula' => $cedula
-        ]);
-
-        return (int) $consulta->fetchColumn() > 0;
     }
 
     public function existeNombreUsuario(string $nombreUsuario): bool

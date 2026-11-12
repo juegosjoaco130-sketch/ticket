@@ -8,9 +8,14 @@
 -- Base esperada: `dely` con 4 tablas:
 --   usuarios, pedidos, estados_pedido, historial_pedidos (+ 6 claves foráneas)
 --
+-- Tabla `usuarios` real: id, nombre, apellido, usuario, password, rol,
+-- estado, fecha_creacion. Roles: encargado, repartidor. Estados: activo,
+-- inactivo. (B03-corr: ya no se usan id_usuario, cedula, password_hash
+-- ni activo: eran columnas de la plantilla vieja.)
+--
 -- Cómo leer los resultados: cada bloque indica lo esperado. Si una consulta
--- falla por tabla/columna inexistente, ESO MISMO es un hallazgo: anotalo como
--- diferencia entre el código y la base real (ver informe B03).
+-- falla por tabla/columna inexistente, ESO MISMO es un hallazgo: anotalo
+-- como diferencia entre el código y la base real.
 -- ============================================================================
 
 -- ----------------------------------------------------------------------------
@@ -24,8 +29,9 @@ WHERE TABLE_SCHEMA = DATABASE()
 ORDER BY TABLE_NAME;
 
 -- ----------------------------------------------------------------------------
--- 1) Columnas de `usuarios` (compatibilidad con el backend actual)
--- El código PHP usa: id_usuario, cedula, usuario, password_hash, rol, activo.
+-- 1) Columnas reales de `usuarios` (compatibilidad con el backend B03-corr)
+-- Se esperan: id, nombre, apellido, usuario, password, rol, estado,
+-- fecha_creacion. Revisar tipos, NOT NULL y valores por defecto.
 -- ----------------------------------------------------------------------------
 SHOW COLUMNS FROM usuarios;
 
@@ -36,14 +42,17 @@ WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'usuarios'
 ORDER BY ORDINAL_POSITION;
 
 -- ----------------------------------------------------------------------------
--- 2) Valores del rol (punto de partida de la migración B05)
--- Esperado hoy: solo 'docente' y/o 'encargado'.
+-- 2) Valores del rol y del estado (punto de partida de la migración B05)
+-- Esperado: rol solo 'encargado'/'repartidor'; estado solo
+-- 'activo'/'inactivo'. Si aparece 'docente', falta correr la migración B05.
 -- ----------------------------------------------------------------------------
-SHOW COLUMNS FROM usuarios LIKE 'rol';
-
 SELECT rol, COUNT(*) AS cantidad
 FROM usuarios
 GROUP BY rol;
+
+SELECT estado, COUNT(*) AS cantidad
+FROM usuarios
+GROUP BY estado;
 
 -- ----------------------------------------------------------------------------
 -- 3) Claves primarias (se espera una por tabla)
@@ -79,22 +88,17 @@ SELECT * FROM estados_pedido;
 SELECT COUNT(*) AS total_estados FROM estados_pedido;
 
 -- ----------------------------------------------------------------------------
--- 6) Volúmenes generales
+-- 6) Volúmenes generales y usuarios inactivos
 -- ----------------------------------------------------------------------------
 SELECT COUNT(*) AS total_usuarios FROM usuarios;
 SELECT COUNT(*) AS total_pedidos FROM pedidos;
 SELECT COUNT(*) AS total_historial FROM historial_pedidos;
-SELECT COUNT(*) AS usuarios_inactivos FROM usuarios WHERE activo = FALSE;
+SELECT COUNT(*) AS usuarios_inactivos FROM usuarios WHERE estado = 'inactivo';
 
 -- ----------------------------------------------------------------------------
--- 7) Unicidad asumida por el backend (se esperan 0 filas en ambas)
--- El alta de usuarios rechaza cédula y nombre de usuario duplicados.
+-- 7) Unicidad del nombre de usuario (se esperan 0 filas)
+-- El alta de usuarios rechaza nombres duplicados.
 -- ----------------------------------------------------------------------------
-SELECT cedula, COUNT(*) AS veces
-FROM usuarios
-GROUP BY cedula
-HAVING veces > 1;
-
 SELECT usuario, COUNT(*) AS veces
 FROM usuarios
 GROUP BY usuario
@@ -123,9 +127,8 @@ HAVING veces > 1;
 -- WHERE h.<fk_pedido> IS NOT NULL AND p.<pk_pedido> IS NULL;
 
 -- ============================================================================
--- FIN. Siguiente paso: informe B03 (diferencias código <-> BD) y luego la
--- migración B05 (b05-migracion-repartidor.sql) para el renombre del rol.
--- Para adaptar el código de tickets -> pedidos se necesita el volcado real:
+-- FIN. Siguiente paso: informe B03-corr. La adaptación tickets -> pedidos
+-- corresponde a B04. Para ella se necesita el volcado real:
 --   SHOW CREATE TABLE pedidos; SHOW CREATE TABLE estados_pedido;
 --   SHOW CREATE TABLE historial_pedidos; SHOW CREATE TABLE usuarios;
 -- ============================================================================

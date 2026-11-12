@@ -25,13 +25,15 @@ final class UsuarioController
             ], 400);
         }
 
-        $cedula = $datos['cedula'] ?? '';
+        $nombre = $datos['nombre'] ?? '';
+        $apellido = $datos['apellido'] ?? '';
         $usuario = $datos['usuario'] ?? '';
         $password = $datos['password'] ?? '';
         $rol = $datos['rol'] ?? '';
 
         if (
-            $cedula === '' ||
+            $nombre === '' ||
+            $apellido === '' ||
             $usuario === '' ||
             $password === '' ||
             $rol === ''
@@ -43,7 +45,8 @@ final class UsuarioController
 
         try {
             $nuevoUsuario = $this->usuarioService->crear(
-                $cedula,
+                $nombre,
+                $apellido,
                 $usuario,
                 $password,
                 $rol
