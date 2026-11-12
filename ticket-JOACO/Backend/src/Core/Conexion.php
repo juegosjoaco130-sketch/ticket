@@ -21,10 +21,19 @@ final class Conexion
             $config['database']
         );
 
+        //B03: modos PDO explícitos. Sin esto, los errores de consulta
+        //fallaban en silencio (ERRMODE_SILENT) y las filas llegaban en
+        //formato dual (FETCH_BOTH). Con excepciones, index.php los
+        //convierte en 500 genérico + error_log, sin exponer detalles.
         self::$conexion = new PDO(
             $dsn,
             $config['username'],
-            $config['password']
+            $config['password'],
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ]
         );
 
         return self::$conexion;
