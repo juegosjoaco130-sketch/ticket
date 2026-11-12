@@ -61,7 +61,7 @@ final class Usuario
         return $usuario ?: null;
     }
 
-    public function listarDocentes(): array
+    public function listarRepartidores(): array
     {
         $sql = "
             SELECT
@@ -71,7 +71,7 @@ final class Usuario
                 rol,
                 activo
             FROM usuarios
-            WHERE rol = 'docente'
+            WHERE rol = 'repartidor'
             ORDER BY usuario ASC
         ";
 

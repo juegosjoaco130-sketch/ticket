@@ -20,7 +20,7 @@ final class TicketService
     ) {
     }
 
-    public function listarDelDocente(
+    public function listarDelRepartidor(
         int $idUsuario
     ): array {
         return $this->ticketModel

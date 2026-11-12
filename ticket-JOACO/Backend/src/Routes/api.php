@@ -49,21 +49,21 @@ $router->post('/api/usuarios', function () use ($usuarioController): void
 
 $router->get('/api/tickets', function () use ($ticketController): void 
 {
-        RolMiddleware::soloDocente();
+        RolMiddleware::soloRepartidor();
         $ticketController->listar();
     }
 );
 
 $router->post('/api/tickets',function () use ($ticketController): void 
 {
-        RolMiddleware::soloDocente();
+        RolMiddleware::soloRepartidor();
         $ticketController->crear();
     }
 );
 
 $router->put('/api/tickets', function () use ($ticketController): void 
 {
-        RolMiddleware::soloDocente();
+        RolMiddleware::soloRepartidor();
         $ticketController->actualizar();
     }
 );

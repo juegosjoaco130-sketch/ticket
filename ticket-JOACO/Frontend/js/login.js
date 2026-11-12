@@ -79,8 +79,8 @@ formulario.addEventListener('submit', async (eventoEnvio) => {
 
         const rol = datos.usuario?.rol;
 
-        if (rol === 'docente') {
-            window.location.replace('templates/docente.html');
+        if (rol === 'repartidor') {
+            window.location.replace('templates/repartidor.html');
             return;
         }
 

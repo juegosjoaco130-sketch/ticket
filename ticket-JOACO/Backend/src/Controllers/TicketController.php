@@ -12,7 +12,7 @@ final class TicketController
         $usuario = AuthMiddleware::verificar();
 
         $tickets = $this->ticketService
-            ->listarDelDocente($usuario['id_usuario']);
+            ->listarDelRepartidor($usuario['id_usuario']);
 
         $prioridades = $this->ticketService
             ->listarPrioridades();

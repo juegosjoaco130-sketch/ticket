@@ -2,7 +2,7 @@ Dely - Cuentas de prueba (las contraseñas NO se guardan en este archivo)
 ==============================================================================
 
 - Rol encargado: cuenta de prueba del encargado.
-- Rol docente: cuenta de prueba del docente.
+- Rol repartidor: cuenta de prueba del repartidor.
 
 Las contraseñas de prueba se entregan por un canal seguro y nunca deben
 escribirse en texto plano dentro del repositorio.

@@ -12,14 +12,12 @@ final class RolMiddleware
             ], 403);
         }
     }
-    public static function soloDocente(): void
+    //B05: rol limitado definitivo: repartidor.
+    public static function soloRepartidor(): void
 {
     $usuario = AuthMiddleware::verificar();
 
-    if ($usuario['rol'] !== 'docente') {
-        //B02: mensaje adaptado a Dely. El valor comparado ('docente') se
-        //mantiene por el ENUM actual de la BD; se renombrará en la etapa
-        //de base de datos.
+    if ($usuario['rol'] !== 'repartidor') {
         Response::json([
             'error' => 'Esta operación es exclusiva para repartidores'
         ], 403);

@@ -42,7 +42,7 @@ final class UsuarioService
             );
         }
 
-        if (!in_array($rol, ['docente', 'encargado'], true)) {
+        if (!in_array($rol, ['repartidor', 'encargado'], true)) {
             throw new RuntimeException(
                 'El rol seleccionado no es válido',
                 422
