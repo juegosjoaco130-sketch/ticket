@@ -1,6 +1,7 @@
+
 services:
   backend:
-    build: 
+    build:
       context: .
       dockerfile: dockerfile
     working_dir: /app
@@ -14,19 +15,15 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+
   frontend:
     image: php:8.3-cli
-
     working_dir: /frontend
-
     command: php -S 0.0.0.0:3000 -t /frontend
-
     ports:
       - "3000:3000"
-
     volumes:
       - ./Frontend:/frontend
-
 
   mysql:
     image: mysql:8.0
@@ -39,7 +36,7 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./database:/docker-entrypoint-initdb.d
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
     healthcheck:
       test:
         [
@@ -54,6 +51,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 20s
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -62,6 +60,7 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
+      UPLOAD_LIMIT: 64M
     depends_on:
       mysql:
         condition: service_healthy

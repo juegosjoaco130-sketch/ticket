@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 final class AuthService
@@ -9,33 +8,36 @@ final class AuthService
     ) {
     }
 
-    public function iniciarSesion(string $nombreUsuario, string $password ): ?array 
-    {
-        $usuario = $this->usuarioModel->buscarPorNombreUsuario($nombreUsuario);
+    public function iniciarSesion(
+        string $nombreUsuario,
+        string $password
+    ): ?array {
+        $usuario = $this->usuarioModel
+            ->buscarPorNombreUsuario($nombreUsuario);
 
         if ($usuario === null) {
             return null;
         }
 
-        //B03-corr: la tabla real usa estado ('activo'/'inactivo').
-        if ($usuario['estado'] !== 'activo') {
+        if ((int) $usuario['activo'] !== 1) {
             return null;
         }
 
-        if (!password_verify($password, $usuario['password'] )) {
+        if (!password_verify(
+            $password,
+            $usuario['password_hash']
+        )) {
             return null;
         }
 
         session_regenerate_id(true);
 
-        //B03-corr: la columna real es `id`; la clave 'id_usuario' se
-        //conserva como puente interno hasta B04 (tickets -> pedidos).
-        $_SESSION['id_usuario'] = (int) $usuario['id'];
+        $_SESSION['id_usuario'] = (int) $usuario['id_usuario'];
         $_SESSION['usuario'] = $usuario['usuario'];
         $_SESSION['rol'] = $usuario['rol'];
 
         return [
-            'id_usuario' => (int) $usuario['id'],
+            'id_usuario' => (int) $usuario['id_usuario'],
             'usuario' => $usuario['usuario'],
             'rol' => $usuario['rol']
         ];
