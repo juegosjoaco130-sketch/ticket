@@ -1,17 +1,16 @@
 -- ============================================================================
--- DELY — B03: Auditoría de la base de datos (SOLO LECTURA, no modifica nada)
+-- DELY — B03/B05: Auditoría de la base de datos (SOLO LECTURA)
 -- ============================================================================
 -- Uso:
 --   mysql -h <host> -P <puerto> -u <usuario> -p dely < b03-auditoria-db.sql
 -- o copiar cada bloque en phpMyAdmin.
 --
--- Base esperada: `dely` con 4 tablas:
---   usuarios, pedidos, estados_pedido, historial_pedidos (+ 6 claves foráneas)
+-- Esquema canónico: database/init.sql con 5 tablas:
+--   usuarios, prioridades, estados, pedidos, historial_pedidos (+ 7 FKs)
 --
--- Tabla `usuarios` real: id, nombre, apellido, usuario, password, rol,
--- estado, fecha_creacion. Roles: encargado, repartidor. Estados: activo,
--- inactivo. (B03-corr: ya no se usan id_usuario, cedula, password_hash
--- ni activo: eran columnas de la plantilla vieja.)
+-- Tabla `usuarios`: id_usuario, cedula, nombre, apellido, usuario,
+-- password_hash, rol, activo, fecha_creacion. Roles: encargado, repartidor.
+-- (B05: este es el esquema canónico; ignora versiones anteriores.)
 --
 -- Cómo leer los resultados: cada bloque indica lo esperado. Si una consulta
 -- falla por tabla/columna inexistente, ESO MISMO es un hallazgo: anotalo
@@ -19,7 +18,7 @@
 -- ============================================================================
 
 -- ----------------------------------------------------------------------------
--- 0) Base actual y lista de tablas (se esperan 4)
+-- 0) Base actual y lista de tablas (se esperan 5)
 -- ----------------------------------------------------------------------------
 SELECT DATABASE() AS base_actual;
 
@@ -29,9 +28,9 @@ WHERE TABLE_SCHEMA = DATABASE()
 ORDER BY TABLE_NAME;
 
 -- ----------------------------------------------------------------------------
--- 1) Columnas reales de `usuarios` (compatibilidad con el backend B03-corr)
--- Se esperan: id, nombre, apellido, usuario, password, rol, estado,
--- fecha_creacion. Revisar tipos, NOT NULL y valores por defecto.
+-- 1) Columnas reales de `usuarios` (compatibilidad con el backend B05)
+-- Se esperan: id_usuario, cedula, nombre, apellido, usuario, password_hash,
+-- rol, activo, fecha_creacion. Revisar tipos, NOT NULL y valores por defecto.
 -- ----------------------------------------------------------------------------
 SHOW COLUMNS FROM usuarios;
 
@@ -42,17 +41,16 @@ WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'usuarios'
 ORDER BY ORDINAL_POSITION;
 
 -- ----------------------------------------------------------------------------
--- 2) Valores del rol y del estado (punto de partida de la migración B05)
--- Esperado: rol solo 'encargado'/'repartidor'; estado solo
--- 'activo'/'inactivo'. Si aparece 'docente', falta correr la migración B05.
+-- 2) Roles y estados de usuarios
+-- Esperado: rol solo 'encargado'/'repartidor'; activo solo 0/1.
 -- ----------------------------------------------------------------------------
 SELECT rol, COUNT(*) AS cantidad
 FROM usuarios
 GROUP BY rol;
 
-SELECT estado, COUNT(*) AS cantidad
+SELECT activo, COUNT(*) AS cantidad
 FROM usuarios
-GROUP BY estado;
+GROUP BY activo;
 
 -- ----------------------------------------------------------------------------
 -- 3) Claves primarias (se espera una por tabla)
@@ -64,7 +62,7 @@ WHERE TABLE_SCHEMA = DATABASE() AND INDEX_NAME = 'PRIMARY'
 ORDER BY tabla, posicion;
 
 -- ----------------------------------------------------------------------------
--- 4) Claves foráneas (se esperan 6) y sus reglas
+-- 4) Claves foráneas (se esperan 7: 4 de pedidos + 3 de historial) y reglas
 -- ----------------------------------------------------------------------------
 SELECT CONSTRAINT_NAME AS restriccion, TABLE_NAME AS tabla,
        COLUMN_NAME AS columna, REFERENCED_TABLE_NAME AS referencia_tabla,
@@ -81,11 +79,17 @@ WHERE CONSTRAINT_SCHEMA = DATABASE()
 ORDER BY tabla;
 
 -- ----------------------------------------------------------------------------
--- 5) Catálogo de estados (se esperan 3: En preparación, En camino, Entregado)
+-- 5) Catálogos: estados (3) y prioridades (4)
+-- Estados: En preparación, En camino, Entregado.
+-- Prioridades: Baja, Normal, Alta, Urgente.
 -- ----------------------------------------------------------------------------
-SELECT * FROM estados_pedido;
+SELECT * FROM estados;
 
-SELECT COUNT(*) AS total_estados FROM estados_pedido;
+SELECT COUNT(*) AS total_estados FROM estados;
+
+SELECT * FROM prioridades;
+
+SELECT COUNT(*) AS total_prioridades FROM prioridades;
 
 -- ----------------------------------------------------------------------------
 -- 6) Volúmenes generales y usuarios inactivos
@@ -93,42 +97,37 @@ SELECT COUNT(*) AS total_estados FROM estados_pedido;
 SELECT COUNT(*) AS total_usuarios FROM usuarios;
 SELECT COUNT(*) AS total_pedidos FROM pedidos;
 SELECT COUNT(*) AS total_historial FROM historial_pedidos;
-SELECT COUNT(*) AS usuarios_inactivos FROM usuarios WHERE estado = 'inactivo';
+SELECT COUNT(*) AS usuarios_inactivos FROM usuarios WHERE activo = FALSE;
 
 -- ----------------------------------------------------------------------------
--- 7) Unicidad del nombre de usuario (se esperan 0 filas)
--- El alta de usuarios rechaza nombres duplicados.
+-- 7) Unicidad asumida por el backend (se esperan 0 filas en ambas)
+-- El alta de usuarios rechaza cédula y nombre de usuario duplicados.
 -- ----------------------------------------------------------------------------
+SELECT cedula, COUNT(*) AS veces
+FROM usuarios
+GROUP BY cedula
+HAVING veces > 1;
+
 SELECT usuario, COUNT(*) AS veces
 FROM usuarios
 GROUP BY usuario
 HAVING veces > 1;
 
 -- ----------------------------------------------------------------------------
--- 8) Registros huérfanos (completar con las columnas del punto 4 y descomentar)
--- Se esperan 0 filas en cada conteo.
+-- 8) Coherencia pedidos/historial
+-- Todo pedido en estado distinto del inicial debería tener historial;
+-- ningún historial debe apuntar a un pedido inexistente (lo garantiza la FK).
 -- ----------------------------------------------------------------------------
--- Pedidos que apuntan a un usuario inexistente:
--- SELECT COUNT(*) AS pedidos_huerfanos_de_usuario
--- FROM pedidos AS p
--- LEFT JOIN usuarios AS u ON u.<pk_usuario> = p.<fk_usuario>
--- WHERE p.<fk_usuario> IS NOT NULL AND u.<pk_usuario> IS NULL;
+SELECT e.nombre AS estado, COUNT(*) AS cantidad
+FROM pedidos AS p
+INNER JOIN estados AS e ON e.id_estado = p.id_estado
+GROUP BY e.nombre;
 
--- Pedidos que apuntan a un estado inexistente:
--- SELECT COUNT(*) AS pedidos_huerfanos_de_estado
--- FROM pedidos AS p
--- LEFT JOIN estados_pedido AS e ON e.<pk_estado> = p.<fk_estado>
--- WHERE p.<fk_estado> IS NOT NULL AND e.<pk_estado> IS NULL;
-
--- Historial que apunta a un pedido inexistente:
--- SELECT COUNT(*) AS historial_huerfano_de_pedido
--- FROM historial_pedidos AS h
--- LEFT JOIN pedidos AS p ON p.<pk_pedido> = h.<fk_pedido>
--- WHERE h.<fk_pedido> IS NOT NULL AND p.<pk_pedido> IS NULL;
+SELECT COUNT(*) AS historial_sin_pedido
+FROM historial_pedidos AS h
+LEFT JOIN pedidos AS p ON p.id_pedido = h.id_pedido
+WHERE p.id_pedido IS NULL;
 
 -- ============================================================================
--- FIN. Siguiente paso: informe B03-corr. La adaptación tickets -> pedidos
--- corresponde a B04. Para ella se necesita el volcado real:
---   SHOW CREATE TABLE pedidos; SHOW CREATE TABLE estados_pedido;
---   SHOW CREATE TABLE historial_pedidos; SHOW CREATE TABLE usuarios;
+-- FIN. Si todo coincide con database/init.sql, el backend B05 es compatible.
 -- ============================================================================

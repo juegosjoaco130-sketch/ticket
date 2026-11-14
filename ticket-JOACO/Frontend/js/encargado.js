@@ -1,22 +1,29 @@
 const API_URL = 'http://localhost:8000/api';
 
-const formulario = document.getElementById('formulario-ticket');
-const campoIdTicket = document.getElementById('id-ticket');
+const formulario = document.getElementById('formulario-pedido');
+const campoIdPedido = document.getElementById('id-pedido');
+const campoCliente = document.getElementById('cliente');
+const campoTelefono = document.getElementById('telefono');
+const campoDireccion = document.getElementById('direccion');
 const campoDescripcion = document.getElementById('descripcion');
-const campoSala = document.getElementById('sala');
 const campoPrioridad = document.getElementById('prioridad');
 const campoEstado = document.getElementById('estado');
+const campoRepartidor = document.getElementById('repartidor');
 
 const contenedorEstado = document.getElementById(
     'contenedor-estado'
+);
+
+const contenedorRepartidor = document.getElementById(
+    'contenedor-repartidor'
 );
 
 const tituloFormulario = document.getElementById(
     'titulo-formulario'
 );
 
-const listaTickets = document.getElementById('lista-tickets');
-const sinTickets = document.getElementById('sin-tickets');
+const listaPedidos = document.getElementById('lista-pedidos');
+const sinPedidos = document.getElementById('sin-pedidos');
 
 const mensajeError = document.getElementById('mensaje-error');
 const mensajeExito = document.getElementById('mensaje-exito');
@@ -42,21 +49,30 @@ formulario.addEventListener(
 
         ocultarMensajes();
 
-        const idTicket = campoIdTicket.value;
+        const idPedido = campoIdPedido.value;
+        const cliente = campoCliente.value.trim();
+        const telefono = campoTelefono.value.trim();
+        const direccion = campoDireccion.value.trim();
         const descripcion = campoDescripcion.value.trim();
-        const sala = campoSala.value;
         const idPrioridad = campoPrioridad.value;
         const idEstado = campoEstado.value;
+        const idRepartidor = campoRepartidor.value;
 
-        if (descripcion === '' || idPrioridad === '') {
+        if (
+            cliente === '' ||
+            telefono === '' ||
+            direccion === '' ||
+            descripcion === '' ||
+            idPrioridad === ''
+        ) {
             mostrarError(
-                'Debes completar la descripción y la prioridad.'
+                'Debes completar cliente, teléfono, dirección, descripción y prioridad.'
             );
 
             return;
         }
 
-        if (idTicket !== '' && idEstado === '') {
+        if (idPedido !== '' && idEstado === '') {
             mostrarError(
                 'Debes seleccionar el estado.'
             );
@@ -66,24 +82,32 @@ formulario.addEventListener(
 
         bloquearFormulario(true);
 
-        const datosTicket = {
+        const datosPedido = {
+            cliente: cliente,
+            telefono: telefono,
+            direccion: direccion,
             descripcion: descripcion,
-            sala: sala,
             id_prioridad: Number(idPrioridad)
         };
 
         let metodo = 'POST';
 
-        if (idTicket !== '') {
+        if (idPedido !== '') {
             metodo = 'PUT';
 
-            datosTicket.id_ticket = Number(idTicket);
-            datosTicket.id_estado = Number(idEstado);
+            datosPedido.id_pedido = Number(idPedido);
+            datosPedido.id_estado = Number(idEstado);
+
+            if (idRepartidor === '') {
+                datosPedido.id_repartidor = null;
+            } else {
+                datosPedido.id_repartidor = Number(idRepartidor);
+            }
         }
 
         try {
             const respuesta = await fetch(
-                API_URL + '/encargado/tickets',
+                API_URL + '/encargado/pedidos',
                 {
                     method: metodo,
 
@@ -93,7 +117,7 @@ formulario.addEventListener(
 
                     credentials: 'include',
 
-                    body: JSON.stringify(datosTicket)
+                    body: JSON.stringify(datosPedido)
                 }
             );
 
@@ -102,7 +126,7 @@ formulario.addEventListener(
             if (!respuesta.ok) {
                 throw new Error(
                     datos.error ||
-                    'No fue posible guardar el ticket.'
+                    'No fue posible guardar el pedido.'
                 );
             }
 
@@ -142,7 +166,7 @@ botonLogout.addEventListener('click', async function () {
 async function cargarDatos() {
     try {
         const respuesta = await fetch(
-            API_URL + '/encargado/tickets',
+            API_URL + '/encargado/pedidos',
             {
                 method: 'GET',
                 credentials: 'include'
@@ -162,7 +186,7 @@ async function cargarDatos() {
         if (!respuesta.ok) {
             throw new Error(
                 datos.error ||
-                'No fue posible obtener los tickets.'
+                'No fue posible obtener los pedidos.'
             );
         }
 
@@ -178,25 +202,49 @@ async function cargarDatos() {
             'id_estado'
         );
 
-        mostrarTickets(datos.tickets);
+        await cargarRepartidores();
+
+        mostrarPedidos(datos.pedidos);
     } catch (error) {
         mostrarError(error.message);
     }
 }
 
+async function cargarRepartidores() {
+    const respuesta = await fetch(
+        API_URL + '/encargado/repartidores',
+        {
+            method: 'GET',
+            credentials: 'include'
+        }
+    );
 
-function cargarPrioridades(prioridades)
-{
-    campoPrioridad.innerHTML =
-        '<option value="">Seleccione una prioridad</option>';
+    const datos = await respuesta.json();
 
-    prioridades.forEach(function (prioridad) {
+    if (!respuesta.ok) {
+        throw new Error(
+            datos.error ||
+            'No fue posible obtener los repartidores.'
+        );
+    }
+
+    campoRepartidor.replaceChildren();
+
+    const primeraOpcion = document.createElement('option');
+
+    primeraOpcion.value = '';
+    primeraOpcion.textContent = 'Sin asignar';
+
+    campoRepartidor.appendChild(primeraOpcion);
+
+    datos.repartidores.forEach(function (repartidor) {
         const opcion = document.createElement('option');
 
-        opcion.value = prioridad.id_prioridad;
-        opcion.textContent = prioridad.nombre;
+        opcion.value = repartidor.id_usuario;
+        opcion.textContent = repartidor.nombre + ' ' +
+            repartidor.apellido + ' (' + repartidor.usuario + ')';
 
-        campoPrioridad.appendChild(opcion);
+        campoRepartidor.appendChild(opcion);
     });
 }
 
@@ -205,7 +253,7 @@ function cargarOpciones(
     elementos,
     nombreId
 ) {
-    select.innerHTML = '';
+    select.replaceChildren();
 
     const primeraOpcion = document.createElement('option');
 
@@ -224,54 +272,53 @@ function cargarOpciones(
     });
 }
 
-function mostrarTickets(tickets) {
-    listaTickets.innerHTML = '';
+function mostrarPedidos(pedidos) {
+    listaPedidos.replaceChildren();
 
-    if (tickets.length === 0) {
-        sinTickets.hidden = false;
+    if (pedidos.length === 0) {
+        sinPedidos.hidden = false;
         return;
     }
 
-    sinTickets.hidden = true;
+    sinPedidos.hidden = true;
 
-    tickets.forEach(function (ticket) {
+    pedidos.forEach(function (pedido) {
         const fila = document.createElement('tr');
 
-        agregarCelda(fila, formatearFecha(ticket.fecha));
-        agregarCelda(fila, ticket.creador);
-        agregarCelda(fila, ticket.descripcion);
+        agregarCelda(fila, formatearFecha(pedido.fecha));
+        agregarCelda(fila, pedido.cliente);
+        agregarCelda(fila, pedido.telefono);
+        agregarCelda(fila, pedido.direccion);
+        agregarCelda(fila, pedido.descripcion);
+        agregarCelda(fila, pedido.prioridad);
+        agregarCelda(fila, pedido.estado);
 
-        if (ticket.sala === null) {
-            agregarCelda(fila, 'Sin sala');
+        if (pedido.id_repartidor === null) {
+            agregarCelda(fila, 'Sin asignar');
         } else {
-            agregarCelda(fila, ticket.sala);
+            agregarCelda(
+                fila,
+                pedido.repartidor + ' (' + pedido.repartidor_usuario + ')'
+            );
         }
-
-        agregarCelda(fila, ticket.prioridad);
-        agregarCelda(fila, ticket.estado);
 
         const celdaAccion = document.createElement('td');
+        const botonModificar = document.createElement('button');
 
-        if (esModificable(ticket.estado)) {
-            const botonModificar = document.createElement('button');
+        botonModificar.type = 'button';
+        botonModificar.textContent = 'Modificar';
 
-            botonModificar.type = 'button';
-            botonModificar.textContent = 'Modificar';
+        botonModificar.addEventListener(
+            'click',
+            function () {
+                cargarPedidoEnFormulario(pedido);
+            }
+        );
 
-            botonModificar.addEventListener(
-                'click',
-                function () {
-                    cargarTicketEnFormulario(ticket);
-                }
-            );
-
-            celdaAccion.appendChild(botonModificar);
-        } else {
-            celdaAccion.textContent = 'No modificable';
-        }
+        celdaAccion.appendChild(botonModificar);
 
         fila.appendChild(celdaAccion);
-        listaTickets.appendChild(fila);
+        listaPedidos.appendChild(fila);
     });
 }
 
@@ -283,60 +330,57 @@ function agregarCelda(fila, contenido) {
     fila.appendChild(celda);
 }
 
-function esModificable(estado) {
-    const estadoNormalizado = estado
-        .trim()
-        .toLowerCase();
+function cargarPedidoEnFormulario(pedido) {
+    campoIdPedido.value = pedido.id_pedido;
+    campoCliente.value = pedido.cliente;
+    campoTelefono.value = pedido.telefono;
+    campoDireccion.value = pedido.direccion;
+    campoDescripcion.value = pedido.descripcion;
+    campoPrioridad.value = pedido.id_prioridad;
+    campoEstado.value = pedido.id_estado;
 
-    return (
-        estadoNormalizado === 'abierto' ||
-        estadoNormalizado === 'en proceso'
-    );
-}
-
-function cargarTicketEnFormulario(ticket) {
-    campoIdTicket.value = ticket.id_ticket;
-    campoDescripcion.value = ticket.descripcion;
-    campoPrioridad.value = ticket.id_prioridad;
-    campoEstado.value = ticket.id_estado;
-
-    if (ticket.sala === null) {
-        campoSala.value = '';
+    if (pedido.id_repartidor === null) {
+        campoRepartidor.value = '';
     } else {
-        campoSala.value = ticket.sala;
+        campoRepartidor.value = pedido.id_repartidor;
     }
 
-    tituloFormulario.textContent = 'Modificar ticket';
+    tituloFormulario.textContent = 'Modificar pedido';
     botonGuardar.textContent = 'Guardar cambios';
     botonCancelar.hidden = false;
     contenedorEstado.hidden = false;
+    contenedorRepartidor.hidden = false;
 
-    campoDescripcion.focus();
+    campoCliente.focus();
 }
 
 function volverModoCreacion() {
     formulario.reset();
 
-    campoIdTicket.value = '';
+    campoIdPedido.value = '';
 
-    tituloFormulario.textContent = 'Crear ticket';
-    botonGuardar.textContent = 'Crear ticket';
+    tituloFormulario.textContent = 'Crear pedido';
+    botonGuardar.textContent = 'Crear pedido';
     botonCancelar.hidden = true;
     contenedorEstado.hidden = true;
+    contenedorRepartidor.hidden = true;
 }
 
 function bloquearFormulario(bloquear) {
+    campoCliente.disabled = bloquear;
+    campoTelefono.disabled = bloquear;
+    campoDireccion.disabled = bloquear;
     campoDescripcion.disabled = bloquear;
-    campoSala.disabled = bloquear;
     campoPrioridad.disabled = bloquear;
     campoEstado.disabled = bloquear;
+    campoRepartidor.disabled = bloquear;
     botonGuardar.disabled = bloquear;
     botonCancelar.disabled = bloquear;
 
     if (bloquear === true) {
         botonGuardar.textContent = 'Guardando...';
-    } else if (campoIdTicket.value === '') {
-        botonGuardar.textContent = 'Crear ticket';
+    } else if (campoIdPedido.value === '') {
+        botonGuardar.textContent = 'Crear pedido';
     } else {
         botonGuardar.textContent = 'Guardar cambios';
     }

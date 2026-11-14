@@ -1,17 +1,16 @@
 const API_URL = 'http://localhost:8000/api';
 
-const formulario = document.getElementById('formulario-ticket');
-const campoIdTicket = document.getElementById('id-ticket');
-const campoDescripcion = document.getElementById('descripcion');
-const campoSala = document.getElementById('sala');
-const campoPrioridad = document.getElementById('prioridad');
+const formulario = document.getElementById('formulario-pedido');
+const campoIdPedido = document.getElementById('id-pedido');
+const campoEstado = document.getElementById('estado');
+const resumenPedido = document.getElementById('resumen-pedido');
 
 const tituloFormulario = document.getElementById(
     'titulo-formulario'
 );
 
-const listaTickets = document.getElementById('lista-tickets');
-const sinTickets = document.getElementById('sin-tickets');
+const listaPedidos = document.getElementById('lista-pedidos');
+const sinPedidos = document.getElementById('sin-pedidos');
 
 const mensajeError = document.getElementById('mensaje-error');
 const mensajeExito = document.getElementById('mensaje-exito');
@@ -38,7 +37,7 @@ cargarDatos();
 
 /*
 |--------------------------------------------------------------------------
-| Crear o modificar un ticket
+| Cambiar el estado de un pedido
 |--------------------------------------------------------------------------
 */
 
@@ -49,14 +48,20 @@ formulario.addEventListener(
 
         ocultarMensajes();
 
-        const idTicket = campoIdTicket.value;
-        const descripcion = campoDescripcion.value.trim();
-        const sala = campoSala.value;
-        const idPrioridad = campoPrioridad.value;
+        const idPedido = campoIdPedido.value;
+        const idEstado = campoEstado.value;
 
-        if (descripcion === '' || idPrioridad === '') {
+        if (idPedido === '') {
             mostrarError(
-                'Debes completar la descripción y la prioridad.'
+                'Primero seleccioná un pedido de la lista.'
+            );
+
+            return;
+        }
+
+        if (idEstado === '') {
+            mostrarError(
+                'Debes seleccionar el estado.'
             );
 
             return;
@@ -64,24 +69,11 @@ formulario.addEventListener(
 
         bloquearFormulario(true);
 
-        const datosTicket = {
-            descripcion: descripcion,
-            sala: sala,
-            id_prioridad: Number(idPrioridad)
-        };
-
-        let metodo = 'POST';
-
-        if (idTicket !== '') {
-            metodo = 'PUT';
-            datosTicket.id_ticket = Number(idTicket);
-        }
-
         try {
             const respuesta = await fetch(
-                API_URL + '/tickets',
+                API_URL + '/pedidos',
                 {
-                    method: metodo,
+                    method: 'PUT',
 
                     headers: {
                         'Content-Type': 'application/json'
@@ -89,7 +81,10 @@ formulario.addEventListener(
 
                     credentials: 'include',
 
-                    body: JSON.stringify(datosTicket)
+                    body: JSON.stringify({
+                        id_pedido: Number(idPedido),
+                        id_estado: Number(idEstado)
+                    })
                 }
             );
 
@@ -98,14 +93,14 @@ formulario.addEventListener(
             if (!respuesta.ok) {
                 throw new Error(
                     datos.error ||
-                    'No fue posible guardar el ticket.'
+                    'No fue posible guardar el estado.'
                 );
             }
 
             mensajeExito.textContent = datos.mensaje;
             mensajeExito.hidden = false;
 
-            volverModoCreacion();
+            limpiarSeleccion();
 
             await cargarDatos();
         } catch (error) {
@@ -118,12 +113,12 @@ formulario.addEventListener(
 
 /*
 |--------------------------------------------------------------------------
-| Cancelar modificación
+| Cancelar selección
 |--------------------------------------------------------------------------
 */
 
 botonCancelar.addEventListener('click', function () {
-    volverModoCreacion();
+    limpiarSeleccion();
     ocultarMensajes();
 });
 
@@ -149,14 +144,14 @@ botonLogout.addEventListener('click', async function () {
 
 /*
 |--------------------------------------------------------------------------
-| Obtener tickets y prioridades
+| Obtener pedidos asignados y estados
 |--------------------------------------------------------------------------
 */
 
 async function cargarDatos() {
     try {
         const respuesta = await fetch(
-            API_URL + '/tickets',
+            API_URL + '/pedidos',
             {
                 method: 'GET',
                 credentials: 'include'
@@ -176,12 +171,12 @@ async function cargarDatos() {
         if (!respuesta.ok) {
             throw new Error(
                 datos.error ||
-                'No fue posible obtener los tickets.'
+                'No fue posible obtener los pedidos.'
             );
         }
 
-        cargarPrioridades(datos.prioridades);
-        mostrarTickets(datos.tickets);
+        cargarEstados(datos.estados);
+        mostrarPedidos(datos.pedidos);
     } catch (error) {
         mostrarError(error.message);
     }
@@ -189,132 +184,123 @@ async function cargarDatos() {
 
 /*
 |--------------------------------------------------------------------------
-| Mostrar prioridades
+| Mostrar estados
 |--------------------------------------------------------------------------
 */
 
-function cargarPrioridades(prioridades) {
-    const prioridadSeleccionada = campoPrioridad.value;
+function cargarEstados(estados) {
+    const estadoSeleccionado = campoEstado.value;
 
-    campoPrioridad.innerHTML = '';
+    campoEstado.replaceChildren();
 
     const primeraOpcion = document.createElement('option');
 
     primeraOpcion.value = '';
-    primeraOpcion.textContent = 'Selecciona una prioridad';
+    primeraOpcion.textContent = 'Selecciona un estado';
 
-    campoPrioridad.appendChild(primeraOpcion);
+    campoEstado.appendChild(primeraOpcion);
 
-    prioridades.forEach(function (prioridad) {
+    estados.forEach(function (estado) {
         const opcion = document.createElement('option');
 
-        opcion.value = prioridad.id_prioridad;
-        opcion.textContent = prioridad.nombre;
+        opcion.value = estado.id_estado;
+        opcion.textContent = estado.nombre;
 
-        campoPrioridad.appendChild(opcion);
+        campoEstado.appendChild(opcion);
     });
 
-    campoPrioridad.value = prioridadSeleccionada;
+    campoEstado.value = estadoSeleccionado;
 }
 
 /*
 |--------------------------------------------------------------------------
-| Mostrar tickets
+| Mostrar pedidos
 |--------------------------------------------------------------------------
 */
 
-function mostrarTickets(tickets) {
-    listaTickets.innerHTML = '';
+function mostrarPedidos(pedidos) {
+    listaPedidos.replaceChildren();
 
-    if (tickets.length === 0) {
-        sinTickets.hidden = false;
+    if (pedidos.length === 0) {
+        sinPedidos.hidden = false;
         return;
     }
 
-    sinTickets.hidden = true;
+    sinPedidos.hidden = true;
 
-    tickets.forEach(function (ticket) {
+    pedidos.forEach(function (pedido) {
         const fila = document.createElement('tr');
 
-        const celdaFecha = document.createElement('td');
-        const celdaDescripcion = document.createElement('td');
-        const celdaSala = document.createElement('td');
-        const celdaPrioridad = document.createElement('td');
+        agregarCelda(fila, formatearFecha(pedido.fecha));
+        agregarCelda(fila, pedido.cliente);
+        agregarCelda(fila, pedido.telefono);
+        agregarCelda(fila, pedido.direccion);
+        agregarCelda(fila, pedido.descripcion);
+        agregarCelda(fila, pedido.prioridad);
+        agregarCelda(fila, pedido.estado);
+
         const celdaAccion = document.createElement('td');
+        const botonEstado = document.createElement('button');
 
-        celdaFecha.textContent = formatearFecha(ticket.fecha);
-        celdaDescripcion.textContent = ticket.descripcion;
+        botonEstado.type = 'button';
+        botonEstado.textContent = 'Cambiar estado';
 
-        if (ticket.sala === null) {
-            celdaSala.textContent = 'Sin sala';
-        } else {
-            celdaSala.textContent = ticket.sala;
-        }
-
-        celdaPrioridad.textContent = ticket.prioridad;
-
-        const botonModificar = document.createElement('button');
-
-        botonModificar.type = 'button';
-        botonModificar.textContent = 'Modificar';
-
-        botonModificar.addEventListener(
+        botonEstado.addEventListener(
             'click',
             function () {
-                cargarTicketEnFormulario(ticket);
+                cargarPedidoEnFormulario(pedido);
             }
         );
 
-        celdaAccion.appendChild(botonModificar);
+        celdaAccion.appendChild(botonEstado);
 
-        fila.appendChild(celdaFecha);
-        fila.appendChild(celdaDescripcion);
-        fila.appendChild(celdaSala);
-        fila.appendChild(celdaPrioridad);
         fila.appendChild(celdaAccion);
-
-        listaTickets.appendChild(fila);
+        listaPedidos.appendChild(fila);
     });
 }
 
-/*
-|--------------------------------------------------------------------------
-| Cargar un ticket para modificarlo
-|--------------------------------------------------------------------------
-*/
+function agregarCelda(fila, contenido) {
+    const celda = document.createElement('td');
 
-function cargarTicketEnFormulario(ticket) {
-    campoIdTicket.value = ticket.id_ticket;
-    campoDescripcion.value = ticket.descripcion;
+    celda.textContent = contenido;
 
-    if (ticket.sala === null) {
-        campoSala.value = '';
-    } else {
-        campoSala.value = ticket.sala;
-    }
-
-    campoPrioridad.value = ticket.id_prioridad;
-
-    tituloFormulario.textContent = 'Modificar ticket';
-    botonGuardar.textContent = 'Guardar cambios';
-    botonCancelar.hidden = false;
-
-    campoDescripcion.focus();
+    fila.appendChild(celda);
 }
 
 /*
 |--------------------------------------------------------------------------
-| Volver al formulario de creación
+| Cargar un pedido para cambiar su estado
 |--------------------------------------------------------------------------
 */
 
-function volverModoCreacion() {
+function cargarPedidoEnFormulario(pedido) {
+    campoIdPedido.value = pedido.id_pedido;
+    campoEstado.value = pedido.id_estado;
+
+    resumenPedido.textContent = 'Pedido de ' + pedido.cliente +
+        ' — ' + pedido.direccion + ' (' + pedido.estado + ').';
+
+    tituloFormulario.textContent = 'Cambiar estado';
+    botonCancelar.hidden = false;
+
+    campoEstado.focus();
+}
+
+/*
+|--------------------------------------------------------------------------
+| Limpiar selección
+|--------------------------------------------------------------------------
+*/
+
+function limpiarSeleccion() {
     formulario.reset();
 
-    campoIdTicket.value = '';
+    campoIdPedido.value = '';
 
-    tituloFormulario.textContent = 'Crear ticket';
-    botonGuardar.textContent = 'Crear ticket';
+    resumenPedido.textContent =
+        'Seleccioná un pedido de la lista para cambiar su estado.';
+
+    tituloFormulario.textContent = 'Cambiar estado';
     botonCancelar.hidden = true;
 }
 
@@ -325,18 +311,14 @@ function volverModoCreacion() {
 */
 
 function bloquearFormulario(bloquear) {
-    campoDescripcion.disabled = bloquear;
-    campoSala.disabled = bloquear;
-    campoPrioridad.disabled = bloquear;
+    campoEstado.disabled = bloquear;
     botonGuardar.disabled = bloquear;
     botonCancelar.disabled = bloquear;
 
     if (bloquear === true) {
         botonGuardar.textContent = 'Guardando...';
-    } else if (campoIdTicket.value === '') {
-        botonGuardar.textContent = 'Crear ticket';
     } else {
-        botonGuardar.textContent = 'Guardar cambios';
+        botonGuardar.textContent = 'Guardar estado';
     }
 }
 

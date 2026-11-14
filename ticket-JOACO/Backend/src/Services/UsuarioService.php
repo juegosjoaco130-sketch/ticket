@@ -8,18 +8,32 @@ final class UsuarioService
     ) {
     }
 
+    public function listarRepartidoresActivos(): array
+    {
+        return $this->usuarioModel->listarRepartidoresActivos();
+    }
+
     public function crear(
+        string $cedula,
         string $nombre,
         string $apellido,
         string $nombreUsuario,
         string $password,
         string $rol
     ): array {
-        //B03-corr: la tabla real usa nombre/apellido (no existe cedula).
+        //B05: esquema canónico database/init.sql (cédula obligatoria).
+        $cedula = trim($cedula);
         $nombre = trim($nombre);
         $apellido = trim($apellido);
         $nombreUsuario = trim($nombreUsuario);
         $rol = trim($rol);
+
+        if (!preg_match('/^[0-9]{8}$/', $cedula)) {
+            throw new RuntimeException(
+                'La cédula debe contener exactamente 8 números',
+                422
+            );
+        }
 
         if ($nombre === '' || $apellido === '') {
             throw new RuntimeException(
@@ -52,6 +66,13 @@ final class UsuarioService
             );
         }
 
+        if ($this->usuarioModel->existeCedula($cedula)) {
+            throw new RuntimeException(
+                'Ya existe un usuario con esa cédula',
+                409
+            );
+        }
+
         if (
             $this->usuarioModel
                 ->existeNombreUsuario($nombreUsuario)
@@ -68,6 +89,7 @@ final class UsuarioService
         );
 
         $idUsuario = $this->usuarioModel->crear(
+            $cedula,
             $nombre,
             $apellido,
             $nombreUsuario,
@@ -77,11 +99,12 @@ final class UsuarioService
 
         return [
             'id_usuario' => $idUsuario,
+            'cedula' => $cedula,
             'nombre' => $nombre,
             'apellido' => $apellido,
             'usuario' => $nombreUsuario,
             'rol' => $rol,
-            'estado' => 'activo'
+            'activo' => true
         ];
     }
 }

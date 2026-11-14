@@ -1,7 +1,8 @@
 const API_URL = 'http://localhost:8000/api';
 
 const formulario = document.getElementById('formulario-usuario');
-//B03-corr: la tabla real usa nombre/apellido (no existe cedula).
+//B05: esquema canónico database/init.sql (cédula obligatoria).
+const campoCedula = document.getElementById('cedula');
 const campoNombre = document.getElementById('nombre');
 const campoApellido = document.getElementById('apellido');
 const campoUsuario = document.getElementById('usuario');
@@ -18,6 +19,7 @@ formulario.addEventListener('submit', async (eventoEnvio) => {
 
     ocultarMensajes();
 
+    const cedula = campoCedula.value.trim();
     const nombre = campoNombre.value.trim();
     const apellido = campoApellido.value.trim();
     const usuario = campoUsuario.value.trim();
@@ -25,6 +27,7 @@ formulario.addEventListener('submit', async (eventoEnvio) => {
     const rol = campoRol.value;
 
     if (
+        cedula === '' ||
         nombre === '' ||
         apellido === '' ||
         usuario === '' ||
@@ -48,6 +51,7 @@ formulario.addEventListener('submit', async (eventoEnvio) => {
             credentials: 'include',
 
             body: JSON.stringify({
+                cedula: cedula,
                 nombre: nombre,
                 apellido: apellido,
                 usuario: usuario,
@@ -70,7 +74,7 @@ formulario.addEventListener('submit', async (eventoEnvio) => {
         mensajeExito.hidden = false;
 
         formulario.reset();
-        campoNombre.focus();
+        campoCedula.focus();
     } catch (error) {
         if (error instanceof TypeError) {
             mostrarError(
@@ -120,6 +124,7 @@ function ocultarMensajes() {
 }
 
 function bloquearFormulario(bloquear) {
+    campoCedula.disabled = bloquear;
     campoNombre.disabled = bloquear;
     campoApellido.disabled = bloquear;
     campoUsuario.disabled = bloquear;

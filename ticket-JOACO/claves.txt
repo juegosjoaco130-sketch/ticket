@@ -7,13 +7,14 @@ Dely - Cuentas de prueba (las contraseñas NO se guardan en este archivo)
 Las contraseñas de prueba se entregan por un canal seguro y nunca deben
 escribirse en texto plano dentro del repositorio.
 
-Las contraseñas reales del sistema se guardan en la columna `password`
-de la tabla `usuarios`, únicamente como hash generado con password_hash(),
-y la autenticación las verifica con password_verify().
+Las contraseñas reales del sistema se guardan en la columna `password_hash`
+de la tabla `usuarios` (esquema canónico database/init.sql), únicamente
+como hash generado con password_hash(), y la autenticación las verifica
+con password_verify().
 
 Si necesitás restablecer una contraseña de prueba:
 1. Generá un hash nuevo con password_hash() y PASSWORD_DEFAULT.
-2. Actualizá la columna `password` del usuario correspondiente con ese hash.
+2. Actualizá la columna `password_hash` del usuario correspondiente con ese hash.
 3. No anotes la contraseña en este archivo.
 
 Nota: las contraseñas anteriores quedaron en el historial de Git, por lo

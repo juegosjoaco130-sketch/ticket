@@ -25,6 +25,7 @@ final class UsuarioController
             ], 400);
         }
 
+        $cedula = $datos['cedula'] ?? '';
         $nombre = $datos['nombre'] ?? '';
         $apellido = $datos['apellido'] ?? '';
         $usuario = $datos['usuario'] ?? '';
@@ -32,6 +33,7 @@ final class UsuarioController
         $rol = $datos['rol'] ?? '';
 
         if (
+            $cedula === '' ||
             $nombre === '' ||
             $apellido === '' ||
             $usuario === '' ||
@@ -45,6 +47,7 @@ final class UsuarioController
 
         try {
             $nuevoUsuario = $this->usuarioService->crear(
+                $cedula,
                 $nombre,
                 $apellido,
                 $usuario,
@@ -67,5 +70,14 @@ final class UsuarioController
                 'error' => $error->getMessage()
             ], $codigo);
         }
+    }
+
+    //B05: repartidores activos disponibles para asignar pedidos.
+    public function listarRepartidores(): void
+    {
+        Response::json([
+            'repartidores' => $this->usuarioService
+                ->listarRepartidoresActivos()
+        ]);
     }
 }

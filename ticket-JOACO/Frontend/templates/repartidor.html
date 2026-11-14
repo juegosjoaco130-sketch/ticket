@@ -8,7 +8,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Mis tickets</title>
+    <title>Mis pedidos | Dely</title>
 
     <link rel="stylesheet" href="../css/estilos.css">
 
@@ -18,7 +18,7 @@
 
 <body>
     <header>
-        <h1>Mis tickets abiertos</h1>
+        <h1>Mis pedidos asignados</h1>
 
         <button id="boton-logout" type="button">
             Cerrar sesión
@@ -27,62 +27,33 @@
 
     <main>
         <section>
-            <h2 id="titulo-formulario">Crear ticket</h2>
+            <h2 id="titulo-formulario">Cambiar estado</h2>
 
-            <form id="formulario-ticket">
+            <form id="formulario-pedido">
                 <input
                     type="hidden"
-                    id="id-ticket"
+                    id="id-pedido"
                 >
 
-                <div>
-                    <label for="descripcion">
-                        Descripción
-                    </label>
-
-                    <textarea
-                        id="descripcion"
-                        maxlength="2000"
-                        required
-                    ></textarea>
-                </div>
+                <p id="resumen-pedido">
+                    Seleccioná un pedido de la lista para cambiar su estado.
+                </p>
 
                 <div>
-                    <label for="sala">Sala</label>
+                    <label for="estado">Estado</label>
 
-                    <select id="sala">
+                    <select id="estado" required>
                         <option value="">
-                            Sin sala
-                        </option>
-                        <option value="Salón 5">Salón 5</option>
-                        <option value="Salón 6">Salón 6</option>
-                        <option value="Salón 7">Salón 7</option>
-                        <option value="Adscripción">Adscripción</option>
-                        <option value="Dirección">Dirección</option>
-                        <option value="Campus">Campus</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="prioridad">Prioridad</label>
-
-                    <select id="prioridad" required>
-                        <option value="">
-                            Selecciona una prioridad
+                            Selecciona un estado
                         </option>
                     </select>
-                     <p>
-                        <a href="criterios-prioridad.html">
-                            Consultar criterios de prioridad
-                        </a>
-                    </p>
                 </div>
 
                 <p id="mensaje-error" role="alert" hidden></p>
                 <p id="mensaje-exito" role="status" hidden></p>
 
                 <button type="submit">
-                    Crear ticket
+                    Guardar estado
                 </button>
 
                 <button
@@ -90,30 +61,33 @@
                     type="button"
                     hidden
                 >
-                    Cancelar modificación
+                    Cancelar
                 </button>
             </form>
         </section>
 
         <section>
-            <h2>Tickets abiertos</h2>
+            <h2>Pedidos asignados</h2>
 
             <table>
                 <thead>
                     <tr>
                         <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
                         <th>Descripción</th>
-                        <th>Sala</th>
                         <th>Prioridad</th>
+                        <th>Estado</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
 
-                <tbody id="lista-tickets"></tbody>
+                <tbody id="lista-pedidos"></tbody>
             </table>
 
-            <p id="sin-tickets" hidden>
-                No tienes tickets abiertos.
+            <p id="sin-pedidos" hidden>
+                No tenés pedidos asignados.
             </p>
         </section>
     </main>

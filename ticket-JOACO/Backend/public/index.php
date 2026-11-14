@@ -7,7 +7,7 @@ ini_set('log_errors', '1');
 
 
 
-session_name('ticket_session');
+session_name('dely_session');
 
 session_set_cookie_params([
     'httponly' => true,

@@ -2,11 +2,13 @@
 
 
 
+//B05: rutas de pedidos (reemplazan a las de tickets).
+
 $conexion = Conexion::conectar();
 
 $usuarioModel = new Usuario($conexion);
 
-$ticketModel = new Ticket($conexion);
+$pedidoModel = new Pedido($conexion);
 
 $authService = new AuthService($usuarioModel);
 
@@ -20,9 +22,9 @@ $estadoModel = new Estado($conexion);
 
 $prioridadModel = new Prioridad($conexion);
 
-$ticketService = new TicketService($ticketModel,$estadoModel,$prioridadModel);
+$pedidoService = new PedidoService($pedidoModel,$estadoModel,$prioridadModel,$usuarioModel);
 
-$ticketController = new TicketController($ticketService);
+$pedidoController = new PedidoController($pedidoService);
 
 
 //----------Rutas login-------------
@@ -35,7 +37,7 @@ $router->post('/api/logout',[$authController, 'logout']);
 
 
 
-$router->post('/api/usuarios', function () use ($usuarioController): void 
+$router->post('/api/usuarios', function () use ($usuarioController): void
 {
         RolMiddleware::soloEncargado();
 
@@ -45,44 +47,49 @@ $router->post('/api/usuarios', function () use ($usuarioController): void
 
 
 
-//----------Rutas tickets-------------
+//----------Rutas pedidos-------------
 
-$router->get('/api/tickets', function () use ($ticketController): void 
+//Repartidor: solo sus pedidos asignados.
+
+$router->get('/api/pedidos', function () use ($pedidoController): void
 {
         RolMiddleware::soloRepartidor();
-        $ticketController->listar();
+        $pedidoController->listarAsignados();
     }
 );
 
-$router->post('/api/tickets',function () use ($ticketController): void 
+$router->put('/api/pedidos',function () use ($pedidoController): void
 {
         RolMiddleware::soloRepartidor();
-        $ticketController->crear();
+        $pedidoController->actualizarEstado();
     }
 );
 
-$router->put('/api/tickets', function () use ($ticketController): void 
-{
-        RolMiddleware::soloRepartidor();
-        $ticketController->actualizar();
-    }
-);
+//Encargado: gestión completa.
 
-$router->get('/api/encargado/tickets',function () use ($ticketController): void {
+$router->get('/api/encargado/pedidos',function () use ($pedidoController): void {
         RolMiddleware::soloEncargado();
-        $ticketController->listarTodos();
+        $pedidoController->listarTodos();
     }
 );
 
-$router->post('/api/encargado/tickets',function () use ($ticketController): void {
+$router->post('/api/encargado/pedidos',function () use ($pedidoController): void {
         RolMiddleware::soloEncargado();
-        $ticketController->crear();
+        $pedidoController->crear();
     }
 );
 
-$router->put('/api/encargado/tickets',function () use ($ticketController): void {
+$router->put('/api/encargado/pedidos',function () use ($pedidoController): void {
         RolMiddleware::soloEncargado();
-        $ticketController->actualizarComoEncargado();
+        $pedidoController->actualizarComoEncargado();
+    }
+);
+
+//Encargado: repartidores activos disponibles para asignar.
+
+$router->get('/api/encargado/repartidores',function () use ($usuarioController): void {
+        RolMiddleware::soloEncargado();
+        $usuarioController->listarRepartidores();
     }
 );
 

@@ -8,7 +8,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Crear usuario | Sistema de Tickets</title>
+    <title>Crear usuario | Dely</title>
 
     <link rel="stylesheet" href="../css/estilos.css">
 
@@ -27,7 +27,20 @@
 
     <main>
         <form id="formulario-usuario">
-            <!--B03-corr: la tabla real usa nombre/apellido (no existe cedula).-->
+            <div>
+                <label for="cedula">Cédula</label>
+
+                <input
+                    type="text"
+                    id="cedula"
+                    name="cedula"
+                    minlength="8"
+                    maxlength="8"
+                    inputmode="numeric"
+                    required
+                >
+            </div>
+
             <div>
                 <label for="nombre">Nombre</label>
 
