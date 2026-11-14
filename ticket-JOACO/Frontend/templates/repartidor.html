@@ -16,18 +16,18 @@
 
 </head>
 
-<body>
-    <header>
-        <h1>Mis pedidos asignados</h1>
+<body class="dely-app">
+    <header class="dely-app__encabezado">
+        <h1 class="dely-app__titulo">Mis pedidos asignados</h1>
 
-        <button id="boton-logout" type="button">
+        <button class="dely-app__boton dely-app__boton--claro" id="boton-logout" type="button">
             Cerrar sesión
         </button>
     </header>
 
-    <main>
-        <section>
-            <h2 id="titulo-formulario">Cambiar estado</h2>
+    <main class="dely-app__principal">
+        <section class="dely-app__tarjeta">
+            <h2 class="dely-app__subtitulo" id="titulo-formulario">Cambiar estado</h2>
 
             <form id="formulario-pedido">
                 <input
@@ -35,29 +35,29 @@
                     id="id-pedido"
                 >
 
-                <p id="resumen-pedido">
+                <p class="dely-app__resumen" id="resumen-pedido">
                     Seleccioná un pedido de la lista para cambiar su estado.
                 </p>
 
-                <div>
-                    <label for="estado">Estado</label>
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="estado">Estado</label>
 
-                    <select id="estado" required>
+                    <select class="dely-app__input" id="estado" required>
                         <option value="">
                             Selecciona un estado
                         </option>
                     </select>
                 </div>
 
-                <p id="mensaje-error" role="alert" hidden></p>
-                <p id="mensaje-exito" role="status" hidden></p>
+                <p class="dely-app__error" id="mensaje-error" role="alert" hidden></p>
+                <p class="dely-app__exito" id="mensaje-exito" role="status" hidden></p>
 
-                <button type="submit">
+                <button class="dely-app__boton" type="submit">
                     Guardar estado
                 </button>
 
                 <button
-                    id="boton-cancelar"
+                    class="dely-app__boton dely-app__boton--secundario" id="boton-cancelar"
                     type="button"
                     hidden
                 >
@@ -66,10 +66,10 @@
             </form>
         </section>
 
-        <section>
-            <h2>Pedidos asignados</h2>
+        <section class="dely-app__tarjeta">
+            <h2 class="dely-app__subtitulo">Pedidos asignados</h2>
 
-            <table>
+            <table class="dely-app__tabla">
                 <thead>
                     <tr>
                         <th>Fecha</th>
@@ -86,7 +86,7 @@
                 <tbody id="lista-pedidos"></tbody>
             </table>
 
-            <p id="sin-pedidos" hidden>
+            <p class="dely-app__vacio" id="sin-pedidos" hidden>
                 No tenés pedidos asignados.
             </p>
         </section>

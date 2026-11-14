@@ -16,28 +16,28 @@
 
 </head>
 
-<body>
-    <header>
-        <h1>Gestión de pedidos</h1>
+<body class="dely-app">
+    <header class="dely-app__encabezado">
+        <h1 class="dely-app__titulo">Gestión de pedidos</h1>
 
-        <nav>
-            <a href="crear-usuario.html">
+        <nav class="dely-app__nav">
+            <a class="dely-app__enlace" href="crear-usuario.html">
                 Crear usuario
             </a>
 
-            <a href="criterios-prioridad.html">
+            <a class="dely-app__enlace" href="criterios-prioridad.html">
                 Criterios de prioridad
             </a>
 
-            <button id="boton-logout" type="button">
+            <button class="dely-app__boton dely-app__boton--claro" id="boton-logout" type="button">
                 Cerrar sesión
             </button>
         </nav>
     </header>
 
-    <main>
-        <section>
-            <h2 id="titulo-formulario">
+    <main class="dely-app__principal">
+        <section class="dely-app__tarjeta">
+            <h2 class="dely-app__subtitulo" id="titulo-formulario">
                 Crear pedido
             </h2>
 
@@ -47,12 +47,12 @@
                     id="id-pedido"
                 >
 
-                <div>
-                    <label for="cliente">
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="cliente">
                         Cliente
                     </label>
 
-                    <input
+                    <input class="dely-app__input"
                         type="text"
                         id="cliente"
                         maxlength="100"
@@ -60,12 +60,12 @@
                     >
                 </div>
 
-                <div>
-                    <label for="telefono">
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="telefono">
                         Teléfono
                     </label>
 
-                    <input
+                    <input class="dely-app__input"
                         type="tel"
                         id="telefono"
                         maxlength="20"
@@ -73,12 +73,12 @@
                     >
                 </div>
 
-                <div>
-                    <label for="direccion">
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="direccion">
                         Dirección
                     </label>
 
-                    <input
+                    <input class="dely-app__input"
                         type="text"
                         id="direccion"
                         maxlength="255"
@@ -86,59 +86,59 @@
                     >
                 </div>
 
-                <div>
-                    <label for="descripcion">
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="descripcion">
                         Descripción
                     </label>
 
-                    <textarea
+                    <textarea class="dely-app__input"
                         id="descripcion"
                         maxlength="2000"
                         required
                     ></textarea>
                 </div>
 
-                <div>
-                    <label for="prioridad">
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="prioridad">
                         Prioridad
                     </label>
 
-                    <select id="prioridad" required>
+                    <select class="dely-app__input" id="prioridad" required>
                         <option value="">
                             Selecciona una prioridad
                         </option>
                     </select>
                 </div>
 
-                <div id="contenedor-estado" hidden>
-                    <label for="estado">Estado</label>
+                <div class="dely-app__campo" id="contenedor-estado" hidden>
+                    <label class="dely-app__etiqueta" for="estado">Estado</label>
 
-                    <select id="estado">
+                    <select class="dely-app__input" id="estado">
                         <option value="">
                             Selecciona un estado
                         </option>
                     </select>
                 </div>
 
-                <div id="contenedor-repartidor" hidden>
-                    <label for="repartidor">Repartidor</label>
+                <div class="dely-app__campo" id="contenedor-repartidor" hidden>
+                    <label class="dely-app__etiqueta" for="repartidor">Repartidor</label>
 
-                    <select id="repartidor">
+                    <select class="dely-app__input" id="repartidor">
                         <option value="">
                             Sin asignar
                         </option>
                     </select>
                 </div>
 
-                <p id="mensaje-error" role="alert" hidden></p>
-                <p id="mensaje-exito" role="status" hidden></p>
+                <p class="dely-app__error" id="mensaje-error" role="alert" hidden></p>
+                <p class="dely-app__exito" id="mensaje-exito" role="status" hidden></p>
 
-                <button type="submit">
+                <button class="dely-app__boton" type="submit">
                     Crear pedido
                 </button>
 
                 <button
-                    id="boton-cancelar"
+                    class="dely-app__boton dely-app__boton--secundario" id="boton-cancelar"
                     type="button"
                     hidden
                 >
@@ -147,10 +147,10 @@
             </form>
         </section>
 
-        <section>
-            <h2>Todos los pedidos</h2>
+        <section class="dely-app__tarjeta">
+            <h2 class="dely-app__subtitulo">Todos los pedidos</h2>
 
-            <table>
+            <table class="dely-app__tabla">
                 <thead>
                     <tr>
                         <th>Fecha</th>
@@ -168,7 +168,7 @@
                 <tbody id="lista-pedidos"></tbody>
             </table>
 
-            <p id="sin-pedidos" hidden>
+            <p class="dely-app__vacio" id="sin-pedidos" hidden>
                 No existen pedidos registrados.
             </p>
         </section>

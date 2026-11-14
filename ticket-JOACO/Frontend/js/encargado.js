@@ -291,7 +291,7 @@ function mostrarPedidos(pedidos) {
         agregarCelda(fila, pedido.direccion);
         agregarCelda(fila, pedido.descripcion);
         agregarCelda(fila, pedido.prioridad);
-        agregarCelda(fila, pedido.estado);
+        agregarEstado(fila, pedido.estado);
 
         if (pedido.id_repartidor === null) {
             agregarCelda(fila, 'Sin asignar');
@@ -327,6 +327,27 @@ function agregarCelda(fila, contenido) {
 
     celda.textContent = contenido;
 
+    fila.appendChild(celda);
+}
+
+//Insignia semántica de estado (solo presentación, sin cambiar lógica).
+function agregarEstado(fila, estado) {
+    const celda = document.createElement('td');
+    const insignia = document.createElement('span');
+
+    if (estado === 'En preparación') {
+        insignia.className = 'dely-app__estado dely-app__estado--preparacion';
+    } else if (estado === 'En camino') {
+        insignia.className = 'dely-app__estado dely-app__estado--camino';
+    } else if (estado === 'Entregado') {
+        insignia.className = 'dely-app__estado dely-app__estado--entregado';
+    } else {
+        insignia.className = 'dely-app__estado';
+    }
+
+    insignia.textContent = estado;
+
+    celda.appendChild(insignia);
     fila.appendChild(celda);
 }
 
