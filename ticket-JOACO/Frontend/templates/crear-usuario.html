@@ -26,90 +26,96 @@
     </header>
 
     <main class="dely-app__principal">
-        <form id="formulario-usuario">
-            <div class="dely-app__campo">
-                <label class="dely-app__etiqueta" for="cedula">Cédula</label>
+        <section class="dely-app__tarjeta">
+            <h2 class="dely-app__subtitulo">
+                Datos del nuevo usuario
+            </h2>
 
-                <input class="dely-app__input"
-                    type="text"
-                    id="cedula"
-                    name="cedula"
-                    minlength="8"
-                    maxlength="8"
-                    inputmode="numeric"
-                    required
-                >
-            </div>
+            <form id="formulario-usuario">
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="cedula">Cédula</label>
 
-            <div class="dely-app__campo">
-                <label class="dely-app__etiqueta" for="nombre">Nombre</label>
+                    <input class="dely-app__input"
+                        type="text"
+                        id="cedula"
+                        name="cedula"
+                        minlength="8"
+                        maxlength="8"
+                        inputmode="numeric"
+                        required
+                    >
+                </div>
 
-                <input class="dely-app__input"
-                    type="text"
-                    id="nombre"
-                    name="nombre"
-                    autocomplete="given-name"
-                    required
-                >
-            </div>
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="nombre">Nombre</label>
 
-            <div class="dely-app__campo">
-                <label class="dely-app__etiqueta" for="apellido">Apellido</label>
+                    <input class="dely-app__input"
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        autocomplete="given-name"
+                        required
+                    >
+                </div>
 
-                <input class="dely-app__input"
-                    type="text"
-                    id="apellido"
-                    name="apellido"
-                    autocomplete="family-name"
-                    required
-                >
-            </div>
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="apellido">Apellido</label>
 
-            <div class="dely-app__campo">
-                <label class="dely-app__etiqueta" for="usuario">Nombre de usuario</label>
+                    <input class="dely-app__input"
+                        type="text"
+                        id="apellido"
+                        name="apellido"
+                        autocomplete="family-name"
+                        required
+                    >
+                </div>
 
-                <input class="dely-app__input"
-                    type="text"
-                    id="usuario"
-                    name="usuario"
-                    minlength="3"
-                    maxlength="50"
-                    autocomplete="username"
-                    required
-                >
-            </div>
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="usuario">Nombre de usuario</label>
 
-            <div class="dely-app__campo">
-                <label class="dely-app__etiqueta" for="password">Contraseña</label>
+                    <input class="dely-app__input"
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        minlength="3"
+                        maxlength="50"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
 
-                <input class="dely-app__input"
-                    type="password"
-                    id="password"
-                    name="password"
-                    minlength="8"
-                    autocomplete="new-password"
-                    required
-                >
-            </div>
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="password">Contraseña</label>
 
-            <div class="dely-app__campo">
-                <label class="dely-app__etiqueta" for="rol">Rol</label>
+                    <input class="dely-app__input"
+                        type="password"
+                        id="password"
+                        name="password"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
 
-                <select class="dely-app__input" id="rol" name="rol" required>
-                    <option value="">Selecciona un rol</option>
-                    <option value="repartidor">Repartidor</option>
-                    <option value="encargado">Encargado</option>
-                </select>
-            </div>
+                <div class="dely-app__campo">
+                    <label class="dely-app__etiqueta" for="rol">Rol</label>
 
-            <p class="dely-app__error" id="mensaje-error" role="alert" hidden></p>
+                    <select class="dely-app__input" id="rol" name="rol" required>
+                        <option value="">Selecciona un rol</option>
+                        <option value="repartidor">Repartidor</option>
+                        <option value="encargado">Encargado</option>
+                    </select>
+                </div>
 
-            <p class="dely-app__exito" id="mensaje-exito" role="status" hidden></p>
+                <p class="dely-app__error" id="mensaje-error" role="alert" hidden></p>
 
-            <button class="dely-app__boton" type="submit">
-                Crear usuario
-            </button>
-        </form>
+                <p class="dely-app__exito" id="mensaje-exito" role="status" hidden></p>
+
+                <button class="dely-app__boton" type="submit">
+                    Crear usuario
+                </button>
+            </form>
+        </section>
     </main>
 </body>
 </html>
