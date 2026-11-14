@@ -134,6 +134,35 @@ final class Usuario
         return (int) $this->conexion->lastInsertId();
     }
 
+    public function cambiarEstadoActivo(
+        int $idUsuario,
+        bool $activo
+    ): bool {
+        $sql = '
+            UPDATE usuarios
+            SET activo = :activo
+            WHERE id_usuario = :id_usuario
+        ';
+
+        $consulta = $this->conexion->prepare($sql);
+
+        $consulta->bindValue(
+            ':activo',
+            $activo,
+            PDO::PARAM_BOOL
+        );
+
+        $consulta->bindValue(
+            ':id_usuario',
+            $idUsuario,
+            PDO::PARAM_INT
+        );
+
+        $consulta->execute();
+
+        return $consulta->rowCount() > 0;
+    }
+
     public function existeCedula(string $cedula): bool
     {
         $sql = '

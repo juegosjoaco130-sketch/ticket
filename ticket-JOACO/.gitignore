@@ -1,2 +1,5 @@
 # No subir nunca el archivo con las claves reales (ver .env.example).
 .env
+
+# Claves y secretos locales: nunca subirlos al repositorio.
+claves.txt
