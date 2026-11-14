@@ -27,6 +27,8 @@ const botonLogout = document.getElementById(
     'boton-logout'
 );
 
+let estadosDisponibles = [];
+
 /*
 |--------------------------------------------------------------------------
 | Inicio
@@ -189,6 +191,8 @@ async function cargarDatos() {
 */
 
 function cargarEstados(estados) {
+    estadosDisponibles = estados;
+
     const estadoSeleccionado = campoEstado.value;
 
     campoEstado.replaceChildren();
@@ -273,12 +277,65 @@ function agregarCelda(fila, contenido) {
 |--------------------------------------------------------------------------
 */
 
+function buscarEstadoPorNombre(nombre) {
+    return estadosDisponibles.find(function (estado) {
+        return estado.nombre === nombre;
+    });
+}
+
+//B05-corrección: el repartidor solo avanza En preparación -> En camino
+//-> Entregado. El backend vuelve a validar (nunca confiar en el frontend).
+function estadoSiguientePermitido(estadoActual) {
+    if (estadoActual === 'En preparación') {
+        return 'En camino';
+    }
+
+    if (estadoActual === 'En camino') {
+        return 'Entregado';
+    }
+
+    return null;
+}
+
 function cargarPedidoEnFormulario(pedido) {
     campoIdPedido.value = pedido.id_pedido;
-    campoEstado.value = pedido.id_estado;
 
-    resumenPedido.textContent = 'Pedido de ' + pedido.cliente +
-        ' — ' + pedido.direccion + ' (' + pedido.estado + ').';
+    const siguiente = estadoSiguientePermitido(pedido.estado);
+    const estadoSiguiente = siguiente === null
+        ? undefined
+        : buscarEstadoPorNombre(siguiente);
+
+    campoEstado.replaceChildren();
+
+    const primeraOpcion = document.createElement('option');
+
+    primeraOpcion.value = '';
+    primeraOpcion.textContent = 'Selecciona un estado';
+
+    campoEstado.appendChild(primeraOpcion);
+
+    if (estadoSiguiente === undefined) {
+        resumenPedido.textContent = 'Pedido de ' + pedido.cliente +
+            ' — ' + pedido.direccion + ' (' + pedido.estado +
+            '). Ya fue entregado y no admite cambios de estado.';
+
+        campoEstado.disabled = true;
+        botonGuardar.disabled = true;
+    } else {
+        const opcion = document.createElement('option');
+
+        opcion.value = estadoSiguiente.id_estado;
+        opcion.textContent = estadoSiguiente.nombre;
+
+        campoEstado.appendChild(opcion);
+        campoEstado.value = estadoSiguiente.id_estado;
+
+        resumenPedido.textContent = 'Pedido de ' + pedido.cliente +
+            ' — ' + pedido.direccion + ' (' + pedido.estado + ').';
+
+        campoEstado.disabled = false;
+        botonGuardar.disabled = false;
+    }
 
     tituloFormulario.textContent = 'Cambiar estado';
     botonCancelar.hidden = false;
@@ -294,6 +351,11 @@ function cargarPedidoEnFormulario(pedido) {
 
 function limpiarSeleccion() {
     formulario.reset();
+
+    cargarEstados(estadosDisponibles);
+
+    campoEstado.disabled = false;
+    botonGuardar.disabled = false;
 
     campoIdPedido.value = '';
 

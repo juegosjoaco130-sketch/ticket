@@ -8,6 +8,8 @@
 final class PedidoService
 {
     private const ESTADO_INICIAL = 'En preparación';
+    private const ESTADO_EN_CAMINO = 'En camino';
+    private const ESTADO_ENTREGADO = 'Entregado';
 
     private const MAX_CLIENTE = 100;
     private const MAX_TELEFONO = 20;
@@ -114,15 +116,20 @@ final class PedidoService
             $idPrioridad
         );
 
-        if (
-            $this->estadoModel
-                ->buscarPorId($idEstado) === null
-        ) {
+        $estadoNuevo = $this->estadoModel
+            ->buscarPorId($idEstado);
+
+        if ($estadoNuevo === null) {
             throw new RuntimeException(
                 'El estado seleccionado no existe',
                 422
             );
         }
+
+        $this->validarTransicion(
+            (int) $pedido['id_estado'],
+            $estadoNuevo['nombre']
+        );
 
         $this->validarRepartidor($idRepartidor);
 
@@ -165,15 +172,20 @@ final class PedidoService
             );
         }
 
-        if (
-            $this->estadoModel
-                ->buscarPorId($idEstado) === null
-        ) {
+        $estadoNuevo = $this->estadoModel
+            ->buscarPorId($idEstado);
+
+        if ($estadoNuevo === null) {
             throw new RuntimeException(
                 'El estado seleccionado no existe',
                 422
             );
         }
+
+        $this->validarTransicion(
+            (int) $pedido['id_estado'],
+            $estadoNuevo['nombre']
+        );
 
         $cambioEstado =
             (int) $pedido['id_estado'] !== $idEstado;
@@ -184,6 +196,50 @@ final class PedidoService
             $idUsuarioSesion,
             $cambioEstado
         );
+    }
+
+    //B05-corrección: el backend valida la transición con los nombres
+    //reales de la tabla estados: En preparación -> En camino -> Entregado.
+    //Repetir el estado actual no cambia nada y se acepta.
+    private function validarTransicion(
+        int $idEstadoActual,
+        string $nombreEstadoNuevo
+    ): void {
+        $estadoActual = $this->estadoModel
+            ->buscarPorId($idEstadoActual);
+
+        if ($estadoActual === null) {
+            throw new RuntimeException(
+                'El estado actual del pedido no está registrado',
+                500
+            );
+        }
+
+        $nombreActual = $estadoActual['nombre'];
+
+        if ($nombreActual === $nombreEstadoNuevo) {
+            return;
+        }
+
+        if ($nombreActual === self::ESTADO_ENTREGADO) {
+            throw new RuntimeException(
+                'El pedido ya fue entregado y no admite cambios de estado',
+                422
+            );
+        }
+
+        $permitido =
+            ($nombreActual === self::ESTADO_INICIAL &&
+                $nombreEstadoNuevo === self::ESTADO_EN_CAMINO) ||
+            ($nombreActual === self::ESTADO_EN_CAMINO &&
+                $nombreEstadoNuevo === self::ESTADO_ENTREGADO);
+
+        if (!$permitido) {
+            throw new RuntimeException(
+                'Cambio de estado no permitido desde ' . $nombreActual,
+                422
+            );
+        }
     }
 
     private function validarDatos(

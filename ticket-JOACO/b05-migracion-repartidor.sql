@@ -1,9 +1,9 @@
 -- ============================================================================
--- AVISO HISTÓRICO (corrección final B03): NO EJECUTAR este script.
--- La estructura actual de Dely ya utiliza los roles `encargado` y
--- `repartidor`, por lo que esta migración quedó obsoleta. Se conserva
--- únicamente como registro del trabajo realizado. No confundir con B04
--- (adaptación de tickets a pedidos), que es un trabajo pendiente distinto.
+-- AVISO HISTÓRICO (corrección final B03/B05): NO EJECUTAR este script.
+-- La estructura actual de Dely (database/init.sql) ya utiliza los roles
+-- `encargado` y `repartidor`, y el sistema de pedidos se implementó en
+-- B05 sobre esas tablas, por lo que esta migración quedó obsoleta. Se
+-- conserva únicamente como registro histórico del trabajo realizado.
 -- ============================================================================
 
 -- ============================================================================
