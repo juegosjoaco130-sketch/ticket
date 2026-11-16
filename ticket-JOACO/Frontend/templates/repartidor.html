@@ -69,22 +69,24 @@
         <section class="dely-app__tarjeta">
             <h2 class="dely-app__subtitulo">Pedidos asignados</h2>
 
-            <table class="dely-app__tabla">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Cliente</th>
-                        <th>Teléfono</th>
-                        <th>Dirección</th>
-                        <th>Descripción</th>
-                        <th>Prioridad</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
+            <div class="dely-app__tabla-contenedor">
+                <table class="dely-app__tabla">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Descripción</th>
+                            <th>Prioridad</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
 
-                <tbody id="lista-pedidos"></tbody>
-            </table>
+                    <tbody id="lista-pedidos"></tbody>
+                </table>
+            </div>
 
             <p class="dely-app__vacio" id="sin-pedidos" hidden>
                 No tenés pedidos asignados.

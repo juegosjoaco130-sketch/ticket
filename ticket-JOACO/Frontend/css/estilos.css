@@ -1,27 +1,159 @@
 /*
 --------------------------------------------------------------------------
-Dely - Estilos de inicio de sesión (Tarea B01)
+Dely - Hoja de estilos (B01 + B09)
 --------------------------------------------------------------------------
-Todas las reglas están bajo el alcance `.dely-login`, que solo existe en
-`index.html`. De esta forma no se altera la presentación de las demás
-pantallas del proyecto.
+1. Variables de la identidad visual.
+2. Reglas compartidas (mismos valores, sin duplicar).
+3. Inicio de sesión: alcance .dely-login (solo index.html).
+4. Pantallas internas: alcance .dely-app.
+5. Responsive: tablets y celulares (solo pantallas internas).
+
+El orden importa: primero lo compartido, después lo específico, que es
+lo que gana ante igual especificidad.
 */
 
-/* Contenedor general de la pantalla de acceso. */
+/* 1. Variables: paleta oficial Dely. */
+:root {
+    --dely-azul-oscuro: #0f172a;
+    --dely-azul: #1e3a5f;
+    --dely-naranja: #ea580c;
+    --dely-naranja-oscuro: #c2410c;
+    --dely-blanco: #ffffff;
+    --dely-gris-claro: #f9fafb;
+    --dely-gris-texto: #6b7280;
+    --dely-texto: #1f2937;
+    --dely-texto-oscuro: #111827;
+    --dely-borde: #d1d5db;
+    --dely-borde-claro: #e5e7eb;
+    --dely-gris-medio: #9ca3af;
+    --dely-naranja-suave: #fdba74;
+    --dely-error: #991b1b;
+    --dely-error-fondo: #fef2f2;
+    --dely-error-borde: #fecaca;
+    --dely-exito: #166534;
+    --dely-exito-fondo: #f0fdf4;
+    --dely-exito-borde: #bbf7d0;
+    --dely-aviso: #854d0e;
+    --dely-aviso-fondo: #fef9c3;
+    --dely-aviso-borde: #fde047;
+    --dely-info-fondo: #eff6ff;
+    --dely-info-borde: #bfdbfe;
+    --dely-blanco-suave: rgba(255, 255, 255, 0.85);
+    --dely-blanco-borde: rgba(255, 255, 255, 0.35);
+    --dely-radio: 0.55rem;
+    --dely-radio-tarjeta: 1rem;
+    --dely-sombra-login: 0 1.5rem 3rem rgba(0, 0, 0, 0.35);
+    --dely-sombra-tarjeta: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.08);
+    --dely-sombra-encabezado: 0 0.25rem 0.75rem rgba(15, 23, 42, 0.25);
+    --dely-foco: 0 0 0 3px rgba(234, 88, 12, 0.18);
+    --dely-fondo-login: linear-gradient(135deg, #0f172a 0%, #1e3a5f 55%, #ea580c 160%);
+    --dely-fuente: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+}
+
+/* 2. Reglas compartidas por login y pantallas internas. */
+.dely-login *,
+.dely-login *::before,
+.dely-login *::after,
+.dely-app *,
+.dely-app *::before,
+.dely-app *::after {
+    box-sizing: border-box;
+}
+
+/* Campos del formulario: bordes grises, foco naranja. */
+.dely-login__campo,
+.dely-app__campo {
+    margin-bottom: 1.1rem;
+}
+
+.dely-login__etiqueta,
+.dely-app__etiqueta {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.dely-login__input,
+.dely-app__input {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    font-size: 1rem;
+    color: var(--dely-texto-oscuro);
+    background-color: var(--dely-gris-claro);
+    border: 1px solid var(--dely-borde);
+    border-radius: var(--dely-radio);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dely-login__input::placeholder,
+.dely-app__input::placeholder {
+    color: var(--dely-gris-medio);
+}
+
+.dely-login__input:focus,
+.dely-app__input:focus {
+    border-color: var(--dely-naranja);
+    background-color: var(--dely-blanco);
+    box-shadow: var(--dely-foco);
+}
+
+.dely-login__input:disabled,
+.dely-app__input:disabled {
+    opacity: 0.65;
+}
+
+/* Mensaje de error. */
+.dely-login__error,
+.dely-app__error {
+    margin: 0 0 1.1rem;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.9rem;
+    color: var(--dely-error);
+    background-color: var(--dely-error-fondo);
+    border: 1px solid var(--dely-error-borde);
+    border-radius: var(--dely-radio);
+}
+
+/* Botón principal naranja. */
+.dely-login__boton,
+.dely-app__boton {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dely-blanco);
+    background-color: var(--dely-naranja);
+    border: none;
+    border-radius: var(--dely-radio);
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+.dely-login__boton:hover,
+.dely-app__boton:hover {
+    background-color: var(--dely-naranja-oscuro);
+}
+
+.dely-login__boton:active,
+.dely-app__boton:active {
+    transform: scale(0.99);
+}
+
+.dely-login__boton:disabled,
+.dely-app__boton:disabled {
+    background-color: var(--dely-naranja-suave);
+    cursor: wait;
+}
+
+/* 3. Inicio de sesión (conserva la apariencia exacta de B01). */
 .dely-login {
     min-height: 100vh;
     margin: 0;
     display: flex;
     flex-direction: column;
-    font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
-    color: #1f2937;
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 55%, #ea580c 160%);
-}
-
-.dely-login *,
-.dely-login *::before,
-.dely-login *::after {
-    box-sizing: border-box;
+    font-family: var(--dely-fuente);
+    color: var(--dely-texto);
+    background: var(--dely-fondo-login);
 }
 
 .dely-login__contenedor {
@@ -36,16 +168,16 @@ pantallas del proyecto.
 .dely-login__tarjeta {
     width: 100%;
     max-width: 420px;
-    background-color: #ffffff;
-    border-radius: 1rem;
-    box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.35);
+    background-color: var(--dely-blanco);
+    border-radius: var(--dely-radio-tarjeta);
+    box-shadow: var(--dely-sombra-login);
     padding: 2.5rem 2rem;
 }
 
 /* Marca Dely. */
 .dely-login__marca {
-    text-align: center;
     margin-bottom: 1.75rem;
+    text-align: center;
 }
 
 .dely-login__logo {
@@ -53,11 +185,11 @@ pantallas del proyecto.
     font-size: 2.25rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: #0f172a;
+    color: var(--dely-azul-oscuro);
 }
 
 .dely-login__punto {
-    color: #ea580c;
+    color: var(--dely-naranja);
 }
 
 .dely-login__marca h1 {
@@ -69,83 +201,13 @@ pantallas del proyecto.
 .dely-login__subtitulo {
     margin: 0;
     font-size: 0.95rem;
-    color: #6b7280;
+    color: var(--dely-gris-texto);
 }
 
-/* Campos del formulario. */
-.dely-login__campo {
-    margin-bottom: 1.1rem;
-}
-
-.dely-login__etiqueta {
-    display: block;
-    margin-bottom: 0.4rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.dely-login__input {
-    width: 100%;
-    padding: 0.7rem 0.85rem;
-    font-size: 1rem;
-    color: #111827;
-    background-color: #f9fafb;
-    border: 1px solid #d1d5db;
-    border-radius: 0.55rem;
-    outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.dely-login__input::placeholder {
-    color: #9ca3af;
-}
-
-.dely-login__input:focus {
-    border-color: #ea580c;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.18);
-}
-
-.dely-login__input:disabled {
-    opacity: 0.65;
-}
-
-/* Mensaje de error. */
-.dely-login__error {
-    margin: 0 0 1.1rem;
-    padding: 0.7rem 0.85rem;
-    font-size: 0.9rem;
-    color: #991b1b;
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: 0.55rem;
-}
-
-/* Botón principal. */
+/* Medidas propias del botón del login (el resto es compartido). */
 .dely-login__boton {
     width: 100%;
     padding: 0.8rem;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #ffffff;
-    background-color: #ea580c;
-    border: none;
-    border-radius: 0.55rem;
-    cursor: pointer;
-    transition: background-color 0.15s ease, transform 0.05s ease;
-}
-
-.dely-login__boton:hover {
-    background-color: #c2410c;
-}
-
-.dely-login__boton:active {
-    transform: scale(0.99);
-}
-
-.dely-login__boton:disabled {
-    background-color: #fdba74;
-    cursor: wait;
 }
 
 /* Pie de página. */
@@ -153,51 +215,38 @@ pantallas del proyecto.
     text-align: center;
     padding: 1rem;
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--dely-blanco-suave);
 }
 
 .dely-login__pie p {
     margin: 0;
 }
 
-/*
---------------------------------------------------------------------------
-Dely - Identidad visual de pantallas internas (encargado, repartidor,
-crear-usuario, criterios).
---------------------------------------------------------------------------
-Misma identidad del login (.dely-login): azul oscuro #0f172a, naranja
-#ea580c/#c2410c, fondos claros, tarjetas blancas, bordes redondeados,
-foco naranja y tipografía Segoe UI / system-ui / Arial.
-Alcance `.dely-app`: no afecta al login.
-*/
-
-/* Contenedor general de pantallas internas. */
+/* 4. Pantallas internas (encargado, repartidor, crear-usuario, criterios). */
 .dely-app {
     min-height: 100vh;
     margin: 0;
     display: flex;
     flex-direction: column;
-    font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
-    color: #1f2937;
-    background-color: #f9fafb;
+    font-family: var(--dely-fuente);
+    color: var(--dely-texto);
+    background-color: var(--dely-gris-claro);
 }
 
-.dely-app *,
-.dely-app *::before,
-.dely-app *::after {
-    box-sizing: border-box;
-}
-
-/* Encabezado principal: azul oscuro. */
+/* Encabezado principal: azul oscuro, fijo al hacer scroll. */
 .dely-app__encabezado {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
     padding: 1rem 1.5rem;
-    color: #ffffff;
-    background-color: #0f172a;
+    color: var(--dely-blanco);
+    background-color: var(--dely-azul-oscuro);
+    box-shadow: var(--dely-sombra-encabezado);
 }
 
 .dely-app__titulo {
@@ -215,18 +264,23 @@ Alcance `.dely-app`: no afecta al login.
 }
 
 .dely-app__enlace {
-    color: #ffffff;
+    color: var(--dely-blanco);
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 600;
     padding: 0.55rem 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 0.55rem;
+    border: 1px solid var(--dely-blanco-borde);
+    border-radius: var(--dely-radio);
     transition: background-color 0.15s ease;
 }
 
 .dely-app__enlace:hover {
-    background-color: #1e3a5f;
+    background-color: var(--dely-azul);
+}
+
+.dely-app__enlace:focus-visible {
+    outline: 2px solid var(--dely-naranja);
+    outline-offset: 2px;
 }
 
 /* Contenido principal. */
@@ -243,9 +297,10 @@ Alcance `.dely-app`: no afecta al login.
 
 /* Tarjetas blancas. */
 .dely-app__tarjeta {
-    background-color: #ffffff;
-    border-radius: 1rem;
-    box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.08);
+    background-color: var(--dely-blanco);
+    border: 1px solid var(--dely-borde-claro);
+    border-radius: var(--dely-radio-tarjeta);
+    box-shadow: var(--dely-sombra-tarjeta);
     padding: 1.5rem;
 }
 
@@ -253,32 +308,12 @@ Alcance `.dely-app`: no afecta al login.
     margin: 0 0 1.25rem;
     font-size: 1.15rem;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--dely-azul-oscuro);
 }
 
-/* Campos de formulario: bordes grises, foco naranja (como el login). */
-.dely-app__campo {
-    margin-bottom: 1.1rem;
-}
-
-.dely-app__etiqueta {
-    display: block;
-    margin-bottom: 0.4rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
+/* Los campos heredan la fuente de la aplicación. */
 .dely-app__input {
-    width: 100%;
-    padding: 0.7rem 0.85rem;
-    font-size: 1rem;
     font-family: inherit;
-    color: #111827;
-    background-color: #f9fafb;
-    border: 1px solid #d1d5db;
-    border-radius: 0.55rem;
-    outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 textarea.dely-app__input {
@@ -286,107 +321,79 @@ textarea.dely-app__input {
     resize: vertical;
 }
 
-.dely-app__input::placeholder {
-    color: #9ca3af;
+select.dely-app__input {
+    cursor: pointer;
 }
 
-.dely-app__input:focus {
-    border-color: #ea580c;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.18);
-}
-
-.dely-app__input:disabled {
-    opacity: 0.65;
-}
-
-/* Botones: misma apariencia que .dely-login__boton. */
+/* Medidas propias del botón interno (el resto es compartido). */
 .dely-app__boton {
     padding: 0.8rem 1.25rem;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #ffffff;
-    background-color: #ea580c;
-    border: none;
-    border-radius: 0.55rem;
-    cursor: pointer;
-    transition: background-color 0.15s ease, transform 0.05s ease;
 }
 
-.dely-app__boton:hover {
-    background-color: #c2410c;
-}
-
-.dely-app__boton:active {
-    transform: scale(0.99);
-}
-
-.dely-app__boton:disabled {
-    background-color: #fdba74;
-    cursor: wait;
+.dely-app__boton:focus-visible {
+    outline: 2px solid var(--dely-naranja-oscuro);
+    outline-offset: 2px;
 }
 
 .dely-app__boton--secundario {
-    color: #0f172a;
-    background-color: #ffffff;
-    border: 1px solid #d1d5db;
+    color: var(--dely-azul-oscuro);
+    background-color: var(--dely-blanco);
+    border: 1px solid var(--dely-borde);
 }
 
 .dely-app__boton--secundario:hover {
-    background-color: #f9fafb;
+    background-color: var(--dely-gris-claro);
 }
 
 .dely-app__boton--secundario:disabled {
-    background-color: #ffffff;
+    background-color: var(--dely-blanco);
     cursor: wait;
 }
 
 /* Botón claro sobre el encabezado oscuro (cerrar sesión). */
 .dely-app__boton--claro {
-    color: #0f172a;
-    background-color: #ffffff;
+    color: var(--dely-azul-oscuro);
+    background-color: var(--dely-blanco);
 }
 
 .dely-app__boton--claro:hover {
-    background-color: #f9fafb;
+    background-color: var(--dely-gris-claro);
 }
 
-/* Mensajes de error y éxito. */
-.dely-app__error {
-    margin: 0 0 1.1rem;
-    padding: 0.7rem 0.85rem;
-    font-size: 0.9rem;
-    color: #991b1b;
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: 0.55rem;
-}
-
+/* Mensaje de éxito. */
 .dely-app__exito {
     margin: 0 0 1.1rem;
     padding: 0.7rem 0.85rem;
     font-size: 0.9rem;
-    color: #166534;
-    background-color: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 0.55rem;
+    color: var(--dely-exito);
+    background-color: var(--dely-exito-fondo);
+    border: 1px solid var(--dely-exito-borde);
+    border-radius: var(--dely-radio);
 }
 
 .dely-app__resumen,
 .dely-app__vacio {
     margin: 0 0 1.1rem;
     font-size: 0.95rem;
-    color: #6b7280;
+    color: var(--dely-gris-texto);
+}
+
+/* Contenedor con scroll horizontal para tablas en pantallas chicas. */
+.dely-app__tabla-contenedor {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
 }
 
 /* Tablas de pedidos. */
 .dely-app__tabla {
     width: 100%;
+    min-width: 42rem;
     border-collapse: separate;
     border-spacing: 0;
     font-size: 0.9rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.55rem;
+    border: 1px solid var(--dely-borde);
+    border-radius: var(--dely-radio);
     overflow: hidden;
 }
 
@@ -398,17 +405,21 @@ textarea.dely-app__input {
 }
 
 .dely-app__tabla thead th {
-    color: #ffffff;
-    background-color: #0f172a;
+    color: var(--dely-blanco);
+    background-color: var(--dely-azul-oscuro);
     font-weight: 700;
 }
 
 .dely-app__tabla tbody tr:nth-child(even) {
-    background-color: #f9fafb;
+    background-color: var(--dely-gris-claro);
+}
+
+.dely-app__tabla tbody tr:hover {
+    background-color: var(--dely-info-fondo);
 }
 
 .dely-app__tabla tbody tr + tr td {
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--dely-borde-claro);
 }
 
 /* Botones de acción dentro de tablas (naranja, como el principal). */
@@ -416,16 +427,16 @@ textarea.dely-app__input {
     padding: 0.45rem 0.8rem;
     font-size: 0.85rem;
     font-weight: 700;
-    color: #ffffff;
-    background-color: #ea580c;
+    color: var(--dely-blanco);
+    background-color: var(--dely-naranja);
     border: none;
-    border-radius: 0.55rem;
+    border-radius: var(--dely-radio);
     cursor: pointer;
     white-space: nowrap;
 }
 
 .dely-app__tabla button:hover {
-    background-color: #c2410c;
+    background-color: var(--dely-naranja-oscuro);
 }
 
 /* Insignias semánticas de estado de pedido. */
@@ -439,21 +450,21 @@ textarea.dely-app__input {
 }
 
 .dely-app__estado--preparacion {
-    color: #854d0e;
-    background-color: #fef9c3;
-    border: 1px solid #fde047;
+    color: var(--dely-aviso);
+    background-color: var(--dely-aviso-fondo);
+    border: 1px solid var(--dely-aviso-borde);
 }
 
 .dely-app__estado--camino {
-    color: #1e3a5f;
-    background-color: #eff6ff;
-    border: 1px solid #bfdbfe;
+    color: var(--dely-azul);
+    background-color: var(--dely-info-fondo);
+    border: 1px solid var(--dely-info-borde);
 }
 
 .dely-app__estado--entregado {
-    color: #166534;
-    background-color: #f0fdf4;
-    border: 1px solid #bbf7d0;
+    color: var(--dely-exito);
+    background-color: var(--dely-exito-fondo);
+    border: 1px solid var(--dely-exito-borde);
 }
 
 /* Texto de pantallas informativas (criterios). */
@@ -476,9 +487,60 @@ textarea.dely-app__input {
     text-align: center;
     padding: 1rem;
     font-size: 0.85rem;
-    color: #6b7280;
+    color: var(--dely-gris-texto);
 }
 
 .dely-app__pie p {
     margin: 0;
+}
+
+/* 5. Responsive: tablets y celulares (el login ya es fluido). */
+@media (max-width: 48rem) {
+    .dely-app__encabezado {
+        padding: 0.85rem 1rem;
+    }
+
+    .dely-app__titulo {
+        font-size: 1.15rem;
+    }
+
+    .dely-app__principal {
+        padding: 1rem 1rem 2rem;
+    }
+
+    .dely-app__tarjeta {
+        padding: 1rem;
+    }
+
+    .dely-app__tabla {
+        font-size: 0.85rem;
+    }
+
+    .dely-app__tabla th,
+    .dely-app__tabla td {
+        padding: 0.55rem 0.6rem;
+    }
+}
+
+@media (max-width: 30rem) {
+    .dely-app__titulo {
+        font-size: 1.05rem;
+    }
+
+    .dely-app__subtitulo {
+        font-size: 1.05rem;
+    }
+
+    .dely-app__tabla button {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.8rem;
+    }
+
+    .dely-app__tarjeta .dely-app__boton {
+        width: 100%;
+    }
+
+    .dely-app__tarjeta .dely-app__boton + .dely-app__boton {
+        margin-top: 0.6rem;
+    }
 }
