@@ -240,7 +240,6 @@ function mostrarPedidos(pedidos) {
         agregarCelda(fila, pedido.telefono);
         agregarCelda(fila, pedido.direccion);
         agregarCelda(fila, pedido.descripcion);
-        agregarCelda(fila, pedido.prioridad);
         agregarEstado(fila, pedido.estado);
 
         const celdaAccion = document.createElement('td');

@@ -30,15 +30,11 @@ final class PedidoController
         $pedidos = $this->pedidoService
             ->listarTodos();
 
-        $prioridades = $this->pedidoService
-            ->listarPrioridades();
-
         $estados = $this->pedidoService
             ->listarEstados();
 
         Response::json([
             'pedidos' => $pedidos,
-            'prioridades' => $prioridades,
             'estados' => $estados
         ]);
     }
@@ -55,7 +51,6 @@ final class PedidoController
                 $datos['telefono'] ?? '',
                 $datos['direccion'] ?? '',
                 $datos['descripcion'] ?? '',
-                (int) ($datos['id_prioridad'] ?? 0)
             );
 
             Response::json([
@@ -80,7 +75,6 @@ final class PedidoController
                 $datos['telefono'] ?? '',
                 $datos['direccion'] ?? '',
                 $datos['descripcion'] ?? '',
-                (int) ($datos['id_prioridad'] ?? 0),
                 (int) ($datos['id_estado'] ?? 0),
                 $this->obtenerRepartidor($datos)
             );

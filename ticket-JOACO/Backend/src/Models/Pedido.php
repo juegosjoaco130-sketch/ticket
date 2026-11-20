@@ -23,8 +23,6 @@ final class Pedido
                 p.descripcion,
                 p.fecha,
                 p.fecha_actualizacion,
-                p.id_prioridad,
-                pri.nombre AS prioridad,
                 p.id_estado,
                 e.nombre AS estado,
                 p.id_repartidor,
@@ -33,9 +31,6 @@ final class Pedido
                 p.id_encargado,
                 CONCAT(enc.nombre, \' \', enc.apellido) AS encargado
             FROM pedidos AS p
-
-            INNER JOIN prioridades AS pri
-                ON pri.id_prioridad = p.id_prioridad
 
             INNER JOIN estados AS e
                 ON e.id_estado = p.id_estado
@@ -71,8 +66,6 @@ final class Pedido
                 p.descripcion,
                 p.fecha,
                 p.fecha_actualizacion,
-                p.id_prioridad,
-                pri.nombre AS prioridad,
                 p.id_estado,
                 e.nombre AS estado,
                 p.id_repartidor,
@@ -81,9 +74,6 @@ final class Pedido
                 p.id_encargado,
                 CONCAT(enc.nombre, \' \', enc.apellido) AS encargado
             FROM pedidos AS p
-
-            INNER JOIN prioridades AS pri
-                ON pri.id_prioridad = p.id_prioridad
 
             INNER JOIN estados AS e
                 ON e.id_estado = p.id_estado
@@ -116,7 +106,6 @@ final class Pedido
                 p.id_encargado,
                 p.id_repartidor,
                 p.id_estado,
-                p.id_prioridad,
                 e.nombre AS estado
             FROM pedidos AS p
 
@@ -147,8 +136,7 @@ final class Pedido
         string $direccion,
         string $descripcion,
         int $idEncargado,
-        int $idEstado,
-        int $idPrioridad
+        int $idEstado
     ): int {
         $sql = '
             INSERT INTO pedidos (
@@ -157,16 +145,14 @@ final class Pedido
                 direccion,
                 descripcion,
                 id_encargado,
-                id_estado,
-                id_prioridad
+                id_estado
             ) VALUES (
                 :cliente,
                 :telefono,
                 :direccion,
                 :descripcion,
                 :id_encargado,
-                :id_estado,
-                :id_prioridad
+                :id_estado
             )
         ';
 
@@ -178,8 +164,7 @@ final class Pedido
             'direccion' => $direccion,
             'descripcion' => $descripcion,
             'id_encargado' => $idEncargado,
-            'id_estado' => $idEstado,
-            'id_prioridad' => $idPrioridad
+            'id_estado' => $idEstado
         ]);
 
         return (int) $this->conexion->lastInsertId();
@@ -191,7 +176,6 @@ final class Pedido
         string $telefono,
         string $direccion,
         string $descripcion,
-        int $idPrioridad,
         int $idEstado,
         ?int $idRepartidor,
         bool $cambioEstado,
@@ -207,7 +191,6 @@ final class Pedido
                     telefono = :telefono,
                     direccion = :direccion,
                     descripcion = :descripcion,
-                    id_prioridad = :id_prioridad,
                     id_estado = :id_estado,
                     id_repartidor = :id_repartidor
                 WHERE id_pedido = :id_pedido
@@ -220,7 +203,6 @@ final class Pedido
                 'telefono' => $telefono,
                 'direccion' => $direccion,
                 'descripcion' => $descripcion,
-                'id_prioridad' => $idPrioridad,
                 'id_estado' => $idEstado,
                 'id_repartidor' => $idRepartidor,
                 'id_pedido' => $idPedido

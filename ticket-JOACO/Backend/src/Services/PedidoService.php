@@ -18,7 +18,6 @@ final class PedidoService
     public function __construct(
         private Pedido $pedidoModel,
         private Estado $estadoModel,
-        private Prioridad $prioridadModel,
         private Usuario $usuarioModel
     ) {
     }
@@ -33,11 +32,6 @@ final class PedidoService
     public function listarTodos(): array
     {
         return $this->pedidoModel->listarTodos();
-    }
-
-    public function listarPrioridades(): array
-    {
-        return $this->prioridadModel->listar();
     }
 
     public function listarEstados(): array
@@ -55,15 +49,13 @@ final class PedidoService
         string $cliente,
         string $telefono,
         string $direccion,
-        string $descripcion,
-        int $idPrioridad
+        string $descripcion
     ): int {
         $this->validarDatos(
             $cliente,
             $telefono,
             $direccion,
-            $descripcion,
-            $idPrioridad
+            $descripcion
         );
 
         $estadoInicial = $this->estadoModel
@@ -82,8 +74,7 @@ final class PedidoService
             trim($direccion),
             trim($descripcion),
             $idEncargado,
-            (int) $estadoInicial['id_estado'],
-            $idPrioridad
+            (int) $estadoInicial['id_estado']
         );
     }
 
@@ -94,7 +85,6 @@ final class PedidoService
         string $telefono,
         string $direccion,
         string $descripcion,
-        int $idPrioridad,
         int $idEstado,
         ?int $idRepartidor
     ): void {
@@ -112,8 +102,7 @@ final class PedidoService
             $cliente,
             $telefono,
             $direccion,
-            $descripcion,
-            $idPrioridad
+            $descripcion
         );
 
         $estadoNuevo = $this->estadoModel
@@ -142,7 +131,6 @@ final class PedidoService
             trim($telefono),
             trim($direccion),
             trim($descripcion),
-            $idPrioridad,
             $idEstado,
             $idRepartidor,
             $cambioEstado,
@@ -246,8 +234,7 @@ final class PedidoService
         string $cliente,
         string $telefono,
         string $direccion,
-        string $descripcion,
-        int $idPrioridad
+        string $descripcion
     ): void {
         if (trim($cliente) === '') {
             throw new RuntimeException(
@@ -298,15 +285,6 @@ final class PedidoService
             );
         }
 
-        if (
-            $this->prioridadModel
-                ->buscarPorId($idPrioridad) === null
-        ) {
-            throw new RuntimeException(
-                'La prioridad seleccionada no existe',
-                422
-            );
-        }
     }
 
     private function validarRepartidor(?int $idRepartidor): void

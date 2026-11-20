@@ -20,9 +20,8 @@ $usuarioController = new UsuarioController($usuarioService);
 
 $estadoModel = new Estado($conexion);
 
-$prioridadModel = new Prioridad($conexion);
 
-$pedidoService = new PedidoService($pedidoModel,$estadoModel,$prioridadModel,$usuarioModel);
+$pedidoService = new PedidoService($pedidoModel,$estadoModel,$usuarioModel);
 
 $pedidoController = new PedidoController($pedidoService);
 

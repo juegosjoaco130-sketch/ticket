@@ -6,7 +6,6 @@ const campoCliente = document.getElementById('cliente');
 const campoTelefono = document.getElementById('telefono');
 const campoDireccion = document.getElementById('direccion');
 const campoDescripcion = document.getElementById('descripcion');
-const campoPrioridad = document.getElementById('prioridad');
 const campoEstado = document.getElementById('estado');
 const campoRepartidor = document.getElementById('repartidor');
 
@@ -54,7 +53,6 @@ formulario.addEventListener(
         const telefono = campoTelefono.value.trim();
         const direccion = campoDireccion.value.trim();
         const descripcion = campoDescripcion.value.trim();
-        const idPrioridad = campoPrioridad.value;
         const idEstado = campoEstado.value;
         const idRepartidor = campoRepartidor.value;
 
@@ -62,11 +60,10 @@ formulario.addEventListener(
             cliente === '' ||
             telefono === '' ||
             direccion === '' ||
-            descripcion === '' ||
-            idPrioridad === ''
+            descripcion === ''
         ) {
             mostrarError(
-                'Debes completar cliente, teléfono, dirección, descripción y prioridad.'
+                'Debes completar cliente, teléfono, dirección y descripción.'
             );
 
             return;
@@ -86,8 +83,7 @@ formulario.addEventListener(
             cliente: cliente,
             telefono: telefono,
             direccion: direccion,
-            descripcion: descripcion,
-            id_prioridad: Number(idPrioridad)
+            descripcion: descripcion
         };
 
         let metodo = 'POST';
@@ -191,12 +187,6 @@ async function cargarDatos() {
         }
 
         cargarOpciones(
-            campoPrioridad,
-            datos.prioridades,
-            'id_prioridad'
-        );
-
-        cargarOpciones(
             campoEstado,
             datos.estados,
             'id_estado'
@@ -290,7 +280,6 @@ function mostrarPedidos(pedidos) {
         agregarCelda(fila, pedido.telefono);
         agregarCelda(fila, pedido.direccion);
         agregarCelda(fila, pedido.descripcion);
-        agregarCelda(fila, pedido.prioridad);
         agregarEstado(fila, pedido.estado);
 
         if (pedido.id_repartidor === null) {
@@ -357,7 +346,6 @@ function cargarPedidoEnFormulario(pedido) {
     campoTelefono.value = pedido.telefono;
     campoDireccion.value = pedido.direccion;
     campoDescripcion.value = pedido.descripcion;
-    campoPrioridad.value = pedido.id_prioridad;
     campoEstado.value = pedido.id_estado;
 
     if (pedido.id_repartidor === null) {
@@ -392,7 +380,6 @@ function bloquearFormulario(bloquear) {
     campoTelefono.disabled = bloquear;
     campoDireccion.disabled = bloquear;
     campoDescripcion.disabled = bloquear;
-    campoPrioridad.disabled = bloquear;
     campoEstado.disabled = bloquear;
     campoRepartidor.disabled = bloquear;
     botonGuardar.disabled = bloquear;
